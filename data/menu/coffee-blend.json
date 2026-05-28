@@ -28,7 +28,7 @@
     "default_selection": "cold",
     "options": {
       "hot": { "available": false, "price": 0, "image": null },
-      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/salted-caramel-latte.png" }
+      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/caramel-latte.jpg" }
     },
     "status": true
   },
@@ -50,7 +50,7 @@
     "default_selection": "cold",
     "options": {
       "hot": { "available": false, "price": 0, "image": null },
-      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/hazelnut-blend.jpg" }
+      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/hazelnut-latte.jpg" }
     },
     "status": true
   },
@@ -61,7 +61,7 @@
     "default_selection": "cold",
     "options": {
       "hot": { "available": false, "price": 0, "image": null },
-      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/tiramisu-blend.jpg" }
+      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/tiramisu-latte.jpg" }
     },
     "status": true
   },
@@ -72,7 +72,7 @@
     "default_selection": "cold",
     "options": {
       "hot": { "available": false, "price": 0, "image": null },
-      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/aren-blend.jpg" }
+      "cold": { "available": true, "price": 47300, "image": "images/menu/coffee-blend/aren-latte.jpg" }
     },
     "status": true
   },

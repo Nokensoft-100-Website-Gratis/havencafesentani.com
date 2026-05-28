@@ -1,6 +1,6 @@
 [
   {
-    "menu_name": "Vanilla",
+    "menu_name": "Vanilla Latte",
     "category": "Flavor",
     "description": "Latte lembut dengan sentuhan aroma vanilla yang manis dan klasik.",
     "default_selection": "cold",
@@ -19,7 +19,7 @@
     "status": true
   },
   {
-    "menu_name": "Caramel",
+    "menu_name": "Caramel Latte",
     "category": "Flavor",
     "description": "Perpaduan kopi dan susu dengan sirup caramel yang kaya rasa.",
     "default_selection": "cold",
@@ -38,7 +38,7 @@
     "status": true
   },
   {
-    "menu_name": "Salted Caramel",
+    "menu_name": "Salted Caramel Latte",
     "category": "Flavor",
     "description": "Sensasi manis caramel berpadu dengan sedikit rasa gurih garam laut.",
     "default_selection": "cold",
@@ -46,18 +46,18 @@
       "hot": {
         "available": true,
         "price": 44000,
-        "image": "images/logo.png"
+        "image": "images/menu/flavor/salted-caramel-latte.jpg"
       },
       "cold": {
         "available": true,
         "price": 47300,
-        "image": "images/logo.png"
+        "image": "images/menu/flavor/salted-caramel-latte.jpg"
       }
     },
     "status": true
   },
   {
-    "menu_name": "Hazelnut",
+    "menu_name": "Hazelnut Latte",
     "category": "Flavor",
     "description": "Kopi susu dengan rasa kacang hazelnut yang gurih dan aromatik.",
     "default_selection": "cold",
@@ -76,7 +76,7 @@
     "status": true
   },
   {
-    "menu_name": "Tiramisu",
+    "menu_name": "Tiramisu Latte",
     "category": "Flavor",
     "description": "Menghadirkan cita rasa dessert khas Italia ke dalam segelas kopi.",
     "default_selection": "cold",
@@ -95,7 +95,7 @@
     "status": true
   },
   {
-    "menu_name": "Aren",
+    "menu_name": "Aren Latte",
     "category": "Flavor",
     "description": "Kopi susu kekinian dengan manis alami dari gula aren asli.",
     "default_selection": "cold",
@@ -114,7 +114,7 @@
     "status": true
   },
   {
-    "menu_name": "Peppermint",
+    "menu_name": "Peppermint Latte",
     "category": "Flavor",
     "description": "Kombinasi kopi yang menyegarkan dengan aroma mint yang dingin.",
     "default_selection": "cold",
@@ -122,18 +122,18 @@
       "hot": {
         "available": true,
         "price": 44000,
-        "image": "images/logo.png"
+        "image": "images/menu/flavor/peppermint-latte.jpg"
       },
       "cold": {
         "available": true,
         "price": 47300,
-        "image": "images/logo.png"
+        "image": "images/menu/flavor/peppermint-latte.jpg"
       }
     },
     "status": true
   },
   {
-    "menu_name": "Pandan",
+    "menu_name": "Pandan Latte",
     "category": "Flavor",
     "description": "Cita rasa lokal pandan yang harum dalam campuran kopi susu.",
     "default_selection": "cold",
@@ -153,7 +153,7 @@
   },
   {
     "menu_name": "Jahe Latte",
-    "category": "Traditional Mix",
+    "category": "Flavor",
     "description": "Minuman hangat yang menyehatkan, perpaduan jahe asli dengan susu lembut.",
     "default_selection": "hot",
     "options": {

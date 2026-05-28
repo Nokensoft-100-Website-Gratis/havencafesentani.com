@@ -434,8 +434,22 @@
                                                 x-text="item.category_label"></span>
                                             <h3 class="font-black uppercase text-xs md:text-sm dark:text-gray-300 group-hover:text-primary leading-tight mt-0.5 mb-1"
                                                 x-text="item.menu_name"></h3>
-                                            <span class="text-primary dark:text-gray-400 font-black text-sm block"
-                                                x-text="formatRupiah(item.options[item.default_selection].price)"></span>
+                                            <div class="flex flex-col gap-0.5 mt-1">
+                                                <template x-if="item.options.hot && item.options.hot.available && item.options.hot.price">
+                                                    <span class="text-xs font-bold flex items-center gap-1.5">
+                                                        <i class="fa-solid fa-mug-hot text-[10px] text-orange-500"></i>
+                                                        <span class="text-[10px] uppercase tracking-wider text-gray-400">Hot</span>
+                                                        <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.hot.price)"></span>
+                                                    </span>
+                                                </template>
+                                                <template x-if="item.options.cold && item.options.cold.available && item.options.cold.price">
+                                                    <span class="text-xs font-bold flex items-center gap-1.5">
+                                                        <i class="fa-solid fa-snowflake text-[10px] text-blue-400"></i>
+                                                        <span class="text-[10px] uppercase tracking-wider text-gray-400">Ice</span>
+                                                        <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.cold.price)"></span>
+                                                    </span>
+                                                </template>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
@@ -482,12 +496,25 @@
                                                             class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                                                             loading="lazy">
                                                     </div>
-                                                    <div class="p-3">
+                                        <div class="p-3">
                                                         <h3 class="font-black uppercase text-xs md:text-sm dark:text-gray-300 group-hover:text-primary leading-tight mb-1"
                                                             x-text="item.menu_name"></h3>
-                                                        <span
-                                                            class="text-primary dark:text-gray-400 font-black text-sm block"
-                                                            x-text="formatRupiah(item.options[item.default_selection].price)"></span>
+                                                        <div class="flex flex-col gap-0.5 mt-1">
+                                                            <template x-if="item.options.hot && item.options.hot.available && item.options.hot.price">
+                                                                <span class="text-xs font-bold flex items-center gap-1.5">
+                                                                    <i class="fa-solid fa-mug-hot text-[10px] text-orange-500"></i>
+                                                                    <span class="text-[10px] uppercase tracking-wider text-gray-400">Hot</span>
+                                                                    <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.hot.price)"></span>
+                                                                </span>
+                                                            </template>
+                                                            <template x-if="item.options.cold && item.options.cold.available && item.options.cold.price">
+                                                                <span class="text-xs font-bold flex items-center gap-1.5">
+                                                                    <i class="fa-solid fa-snowflake text-[10px] text-blue-400"></i>
+                                                                    <span class="text-[10px] uppercase tracking-wider text-gray-400">Ice</span>
+                                                                    <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.cold.price)"></span>
+                                                                </span>
+                                                            </template>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </template>
