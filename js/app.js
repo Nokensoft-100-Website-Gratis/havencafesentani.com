@@ -71,6 +71,43 @@ function openStatus() {
     return { open: true, label: 'Open now · until 21:00' };
 }
 
+const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-2.5833&longitude=140.4851'
+    + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,is_day'
+    + '&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+    + '&timezone=Asia%2FJayapura&forecast_days=1';
+
+/**
+ * Map a WMO weather code to a label and Font Awesome icon
+ * @param {number} code - WMO weather code
+ * @param {boolean} isDay
+ * @returns {{label: string, icon: string, color: string}}
+ */
+function weatherCondition(code, isDay) {
+    if (code === 0) return isDay
+        ? { label: 'Clear & sunny', icon: 'fa-sun', color: 'text-amber-400' }
+        : { label: 'Clear night', icon: 'fa-moon', color: 'text-indigo-300' };
+    if (code <= 2) return isDay
+        ? { label: code === 1 ? 'Mostly sunny' : 'Partly cloudy', icon: 'fa-cloud-sun', color: 'text-amber-400' }
+        : { label: code === 1 ? 'Mostly clear' : 'Partly cloudy', icon: 'fa-cloud-moon', color: 'text-indigo-300' };
+    if (code === 3) return { label: 'Overcast', icon: 'fa-cloud', color: 'text-gray-400' };
+    if (code <= 48) return { label: 'Foggy', icon: 'fa-smog', color: 'text-gray-400' };
+    if (code <= 57) return { label: 'Light drizzle', icon: 'fa-cloud-rain', color: 'text-sky-500' };
+    if (code <= 67) return { label: code >= 65 ? 'Heavy rain' : 'Rain', icon: 'fa-cloud-showers-heavy', color: 'text-sky-500' };
+    if (code <= 77) return { label: 'Snow', icon: 'fa-snowflake', color: 'text-sky-300' };
+    if (code <= 82) return { label: 'Rain showers', icon: 'fa-cloud-showers-heavy', color: 'text-sky-500' };
+    return { label: 'Thunderstorm', icon: 'fa-cloud-bolt', color: 'text-violet-500' };
+}
+
+/**
+ * A short, friendly suggestion based on today's weather
+ */
+function weatherTip(code, rainChance, temp) {
+    if (code >= 95) return 'Stormy out there — stay cozy indoors with a hot latte.';
+    if (code >= 51 || rainChance >= 70) return 'Rain is likely today — perfect weather for a hot coffee indoors.';
+    if (temp >= 30) return 'It\'s hot today — cool down with an iced coffee or a fresh squash.';
+    return 'Great weather to relax in our orchid garden.';
+}
+
 /**
  * Lock or unlock page scroll while an overlay is open
  * @param {boolean} locked
@@ -223,6 +260,48 @@ document.addEventListener('alpine:init', () => {
 
         next() { this.go(this.active + 1); },
         prev() { this.go(this.active - 1); }
+    }));
+
+    /**
+     * Live weather for Sentani from Open-Meteo (free, no API key)
+     */
+    Alpine.data('weather', () => ({
+        data: null,
+        loading: true,
+        error: false,
+
+        init() {
+            this.load();
+            setInterval(() => this.load(), 15 * 60000);
+        },
+
+        async load() {
+            this.error = false;
+            try {
+                const res = await fetch(WEATHER_URL);
+                if (!res.ok) throw new Error(res.statusText);
+                const json = await res.json();
+                const c = json.current;
+                const d = json.daily;
+                const condition = weatherCondition(c.weather_code, c.is_day === 1);
+                const rain = d.precipitation_probability_max[0] ?? 0;
+                this.data = {
+                    ...condition,
+                    temp: Math.round(c.temperature_2m),
+                    feels: Math.round(c.apparent_temperature),
+                    humidity: c.relative_humidity_2m,
+                    max: Math.round(d.temperature_2m_max[0]),
+                    min: Math.round(d.temperature_2m_min[0]),
+                    rain,
+                    time: c.time.slice(11, 16),
+                    tip: weatherTip(c.weather_code, rain, c.temperature_2m)
+                };
+            } catch (e) {
+                console.error('Failed to load weather', e);
+                if (!this.data) this.error = true;
+            }
+            this.loading = false;
+        }
     }));
 
     /**

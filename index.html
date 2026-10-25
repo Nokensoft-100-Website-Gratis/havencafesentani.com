@@ -281,20 +281,68 @@
                         </a>
                     </div>
 
-                    <dl class="grid grid-cols-3 mt-8 sm:mt-10 pt-6 border-t border-gray-100 dark:border-gray-800 text-center sm:text-left">
-                        <div>
-                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Since</dt>
-                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">2017</dd>
+                    <!-- Live weather in Sentani (Open-Meteo) -->
+                    <div x-data="weather" class="mt-8 sm:mt-10 pt-6 border-t border-gray-100 dark:border-gray-800"
+                        aria-live="polite">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">
+                                <i class="fa-solid fa-location-dot text-primary dark:text-green-500 mr-1" aria-hidden="true"></i>
+                                Sentani Weather Today
+                            </span>
+                            <span x-show="data" x-cloak class="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-gray-400">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                Live · <span x-text="data && data.time"></span> WIT
+                            </span>
                         </div>
-                        <div class="border-x border-gray-100 dark:border-gray-800 sm:px-6">
-                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Beans</dt>
-                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">100% Papua</dd>
+
+                        <!-- Loading -->
+                        <div x-show="loading" class="flex items-center gap-4 animate-pulse" aria-label="Loading weather">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700"></div>
+                            <div class="flex-1 space-y-2">
+                                <div class="h-5 w-24 bg-gray-100 dark:bg-gray-700"></div>
+                                <div class="h-3 w-40 bg-gray-100 dark:bg-gray-700"></div>
+                            </div>
                         </div>
-                        <div class="sm:pl-6">
-                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Open</dt>
-                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">11–21</dd>
-                        </div>
-                    </dl>
+
+                        <!-- Error -->
+                        <p x-show="error" x-cloak class="text-sm text-gray-500 dark:text-gray-400">
+                            <i class="fa-solid fa-cloud text-gray-300 mr-2" aria-hidden="true"></i>
+                            Weather is unavailable right now.
+                            <button @click="load()" type="button" class="underline font-semibold ml-1">Retry</button>
+                        </p>
+
+                        <!-- Weather -->
+                        <template x-if="data">
+                            <div>
+                                <div class="flex items-center gap-4">
+                                    <i class="fa-solid text-4xl sm:text-5xl w-12 sm:w-14 text-center" :class="data.icon + ' ' + data.color"
+                                        aria-hidden="true"></i>
+                                    <div class="min-w-0">
+                                        <p class="leading-none">
+                                            <span class="font-extrabold text-3xl sm:text-4xl" x-text="data.temp + '°'"></span>
+                                            <span class="text-sm text-gray-400 ml-1" x-text="'Feels ' + data.feels + '°'"></span>
+                                        </p>
+                                        <p class="font-bold text-sm sm:text-base mt-1 truncate" x-text="data.label"></p>
+                                    </div>
+                                </div>
+                                <dl class="grid grid-cols-3 mt-4 text-center sm:text-left">
+                                    <div>
+                                        <dt class="text-[10px] uppercase tracking-widest text-gray-400">High / Low</dt>
+                                        <dd class="font-extrabold whitespace-nowrap" x-text="data.max + '° / ' + data.min + '°'"></dd>
+                                    </div>
+                                    <div class="border-x border-gray-100 dark:border-gray-800 sm:px-5">
+                                        <dt class="text-[10px] uppercase tracking-widest text-gray-400">Rain chance</dt>
+                                        <dd class="font-extrabold whitespace-nowrap" x-text="data.rain + '%'"></dd>
+                                    </div>
+                                    <div class="sm:pl-5">
+                                        <dt class="text-[10px] uppercase tracking-widest text-gray-400">Humidity</dt>
+                                        <dd class="font-extrabold whitespace-nowrap" x-text="data.humidity + '%'"></dd>
+                                    </div>
+                                </dl>
+                                <p class="mt-3 text-xs text-gray-500 dark:text-gray-400 italic" x-text="data.tip"></p>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 <div x-data="heroSlider" @touchstart.passive="touchStart($event)" @touchend="touchEnd($event)"
@@ -999,10 +1047,13 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-gray-800 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="pt-8 border-t border-gray-800 flex flex-col items-center gap-4 text-center">
                 <p class="text-gray-500 text-xs uppercase tracking-widest">© 2026 Haven Cafe Sentani. All Rights Reserved.</p>
-                <a href="https://www.nokensoft.com" target="_blank" rel="noopener"
-                    class="text-gray-500 text-xs uppercase tracking-widest hover:text-green-400 transition">Powered by Nokensoft</a>
+                <a href="https://www.nokensoft.com" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-gray-500 text-xs uppercase tracking-widest hover:text-sky-400 transition">
+                    <img src="images/nokensoft-logo.webp" alt="Nokensoft logo" width="89" height="96" class="h-6 w-auto">
+                    Powered by Nokensoft.com
+                </a>
             </div>
         </div>
     </footer>
