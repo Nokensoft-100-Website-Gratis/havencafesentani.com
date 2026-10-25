@@ -35,11 +35,414 @@
 }
 
 /* ==========================================================================
+   Layout Helpers
+   ========================================================================== */
+html.overflow-hidden {
+    overflow: hidden;
+}
+
+/* Keep anchored sections clear of the fixed top bar */
+[data-spy] {
+    scroll-margin-top: 64px;
+}
+
+@media (min-width: 1024px) {
+    [data-spy] {
+        scroll-margin-top: 80px;
+    }
+}
+
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Notch / home-indicator safe areas */
+.safe-top {
+    padding-top: env(safe-area-inset-top);
+    box-sizing: content-box;
+}
+
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.fab-offset {
+    bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+    .fab-offset {
+        bottom: 2rem;
+    }
+}
+
+/* ==========================================================================
    Navigation Styles
    ========================================================================== */
 .nav-active {
     color: var(--color-primary-light) !important;
     border-bottom: 2px solid var(--color-primary-light);
+}
+
+/* ==========================================================================
+   Open / Closed Status
+   ========================================================================== */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    width: fit-content;
+}
+
+.status-pill.is-open {
+    color: #15803d;
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.status-pill.is-closed {
+    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.dark .status-pill.is-open,
+footer .status-pill.is-open {
+    color: #4ade80;
+}
+
+.dark .status-pill.is-closed,
+footer .status-pill.is-closed {
+    color: #f87171;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: currentColor;
+}
+
+.is-open .status-dot {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+.info-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    transition: border-color var(--transition-slow);
+}
+
+.info-card:hover {
+    border-color: var(--color-primary);
+}
+
+.info-card > i {
+    display: block;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.info-card h5 {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+}
+
+.info-card p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.info-card p.price {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.dark .info-card {
+    background: var(--color-dark);
+    border-color: #1f2937;
+}
+
+.dark .info-card h5 {
+    color: #fff;
+}
+
+.dark .info-card > i,
+.dark .info-card p.price {
+    color: #4ade80;
+}
+
+.dark .info-card p {
+    color: #9ca3af;
+}
+
+@media (min-width: 640px) {
+    .info-card {
+        padding: 1.5rem;
+    }
+}
+
+.event-card {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    transition: border-color var(--transition-slow);
+}
+
+.event-card:hover {
+    border-color: var(--color-primary);
+}
+
+.dark .event-card {
+    background: var(--color-dark-lighter);
+    border-color: #1f2937;
+}
+
+.event-card .event-icon {
+    display: block;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    margin-bottom: 1.25rem;
+}
+
+.dark .event-card .event-icon {
+    color: #4ade80;
+}
+
+.event-card h3 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+}
+
+.event-card p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+}
+
+.dark .event-card p {
+    color: #9ca3af;
+}
+
+.event-card ul {
+    position: relative;
+    z-index: 1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.event-card li + li {
+    margin-top: 0.5rem;
+}
+
+.event-card li i {
+    color: var(--color-primary);
+    margin-right: 0.5rem;
+}
+
+.dark .event-card li i {
+    color: #4ade80;
+}
+
+.event-card .event-watermark {
+    position: absolute;
+    right: -1rem;
+    bottom: -1rem;
+    font-size: 8rem;
+    opacity: 0.05;
+    transition: opacity var(--transition-default);
+    pointer-events: none;
+}
+
+.event-card:hover .event-watermark {
+    opacity: 0.1;
+}
+
+@media (min-width: 640px) {
+    .event-card {
+        padding: 2rem;
+    }
+
+    .event-card h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+.form-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #9ca3af;
+}
+
+.form-input {
+    width: 100%;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+    padding: 0.9rem 1rem;
+    font-size: 16px; /* 16px prevents iOS zoom on focus */
+    color: inherit;
+    border-radius: 0;
+    transition: border-color var(--transition-default);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+select.form-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.dark .form-input {
+    background-color: var(--color-dark-lighter);
+    border-color: #374151;
+    color-scheme: dark;
+}
+
+@media (min-width: 640px) {
+    .form-input {
+        font-size: 0.875rem;
+    }
+}
+
+/* ==========================================================================
+   Full-screen Viewers (menu reader & gallery lightbox)
+   ========================================================================== */
+.viewer-height {
+    height: 100vh;
+    height: 100dvh;
+}
+
+.viewer-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background var(--transition-default);
+}
+
+.viewer-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: background var(--transition-default);
+    z-index: 2;
+}
+
+.viewer-nav:hover {
+    background: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+    .viewer-nav {
+        width: 52px;
+        height: 52px;
+    }
+}
+
+/* Zoomed menu page: wider than the screen on phones, fit-to-width on desktop */
+.viewer-zoomed {
+    width: min(1400px, 220%);
+    max-height: none;
+}
+
+@media (min-width: 1024px) {
+    .viewer-zoomed {
+        width: min(1400px, 100%);
+    }
+}
+
+/* Short landscape screens: give the page all the height */
+@media (max-height: 520px) {
+    .viewer-strip {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Floating Action Button Labels
+   ========================================================================== */
+.fab-label {
+    background: #fff;
+    color: #374151;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: all var(--transition-default);
+}
+
+.group:hover .fab-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.dark .fab-label {
+    background: #1f2937;
+    color: #e5e7eb;
 }
 
 /* ==========================================================================

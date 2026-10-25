@@ -1,0 +1,15 @@
+{
+  "name": "haven-cafe-tools",
+  "private": true,
+  "type": "module",
+  "description": "Build scripts for havencafesentani.com (not deployed)",
+  "scripts": {
+    "menu": "node build-menu.mjs"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "0.1.65",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "4.10.38",
+    "sharp": "0.33.5"
+  }
+}

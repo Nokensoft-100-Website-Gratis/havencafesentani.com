@@ -55,6 +55,24 @@ Copyright © 2026 Nokensoft. All Rights Reserved.
 
 ---
 
+## Update Menu
+
+Menu ditampilkan dari file PDF resmi yang dikonversi menjadi gambar WebP (ringan untuk mobile) beserta teks untuk fitur pencarian.
+
+1. Simpan PDF baru di `_REVISI/haven-cafe-sentani-menu-YYYYMMDD.pdf`
+2. Jika jumlah/urutan halaman berubah, sesuaikan daftar `PAGES` di `tools/build-menu.mjs`
+3. Jalankan:
+   ```bash
+   cd tools
+   npm install
+   node build-menu.mjs ../_REVISI/haven-cafe-sentani-menu-YYYYMMDD.pdf
+   ```
+4. Perbarui label ukuran PDF dan tanggal "Menu updated" di `index.html`
+
+Foto galeri dikelola di `js/gallery.js` (file di `images/gallery/<kategori>/`).
+
+---
+
 ## Teknologi
 
 - [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework

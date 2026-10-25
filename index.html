@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth" x-data="{
-    darkMode: localStorage.getItem('theme') === 'dark',
-    activeTab: 'popular',
-    currentSection: 'home'
-}" :class="{ 'dark': darkMode }">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <!--
@@ -25,16 +21,26 @@
     =========================================================
     -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Apply saved theme before first paint (prevents flash) -->
+    <script>
+        try {
+            var savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        } catch (e) { }
+    </script>
 
     <!-- Primary Meta Tags -->
     <title>Haven Cafe | Coffee & Roastery Sentani Papua</title>
     <meta name="title" content="Haven Cafe | Coffee & Roastery Sentani Papua">
     <meta name="description"
-        content="Haven Cafe - Best Coffee Shop & Roastery in Sentani, Jayapura. Experience the finest Papua highland coffee with authentic flavors in a modern atmosphere.">
+        content="Haven Cafe - Coffee shop & garden venue in Sentani, Jayapura. Papua highland coffee, full food menu, delivery and reservations. Open Wednesday - Monday, 11:00 - 21:00.">
     <meta name="keywords"
-        content="haven cafe, coffee shop sentani, kopi papua, roastery jayapura, cafe sentani, coffee highland papua, garden venue sentani">
+        content="haven cafe, coffee shop sentani, kopi papua, roastery jayapura, cafe sentani, coffee highland papua, garden venue sentani, menu haven cafe">
     <meta name="author" content="Haven Cafe">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://havencafesentani.com/">
@@ -45,7 +51,9 @@
     <meta property="og:title" content="Haven Cafe | Coffee & Roastery Sentani Papua">
     <meta property="og:description"
         content="Experience the finest Papua highland coffee in the heart of Sentani. Authentic flavors blended with a modern atmosphere.">
-    <meta property="og:image" content="https://havencafesentani.com/images/logo.png">
+    <meta property="og:image" content="https://havencafesentani.com/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Haven Cafe">
 
@@ -55,55 +63,55 @@
     <meta name="twitter:title" content="Haven Cafe | Coffee & Roastery Sentani Papua">
     <meta name="twitter:description"
         content="Experience the finest Papua highland coffee in the heart of Sentani. Authentic flavors blended with a modern atmosphere.">
-    <meta name="twitter:image" content="https://havencafesentani.com/images/logo.png">
+    <meta name="twitter:image" content="https://havencafesentani.com/images/og-image.jpg">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#1a4d2e">
     <meta name="msapplication-TileColor" content="#1a4d2e">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/logo-dark.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/logo-dark.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./images/logo-dark.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
 
     <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preload" as="image" href="./images/hero/hero-1.webp" fetchpriority="high">
 
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 
     <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap"
         rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/styles.css">
 
-    <!-- Configuration & App Scripts -->
-    <script src="./js/config.js"></script>
+    <!-- Content Data & App Scripts (must load before Alpine) -->
+    <script src="./js/menu-book.js"></script>
+    <script src="./js/gallery.js"></script>
     <script src="./js/app.js"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js"></script>
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "CafeOrCoffeeShop",
-        "name": "Haven Cafe",
-        "description": "Best Coffee Shop & Roastery in Sentani, Jayapura. Experience the finest Papua highland coffee.",
+        "name": "Haven Cafe Sentani",
+        "description": "Coffee shop, roastery and garden venue in Sentani, Jayapura. Papua highland coffee and a full food menu.",
         "url": "https://havencafesentani.com",
-        "telephone": "+62 81248584145",
+        "telephone": "+62 812-4858-4145",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Ex-Bosco Fernandez, Jl. Gereja Silo, Hinekombe",
+            "streetAddress": "Ex-Bosco Fernandez, Jl. Gereja Silo #596, Hinekombe",
             "addressLocality": "Sentani",
             "addressRegion": "Papua",
             "addressCountry": "ID"
@@ -116,150 +124,209 @@
         "openingHoursSpecification": [
             {
                 "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                "opens": "09:00",
-                "closes": "22:00"
-            },
-            {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": "Sunday",
-                "opens": "12:00",
-                "closes": "23:00"
+                "dayOfWeek": ["Monday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                "opens": "11:00",
+                "closes": "21:00"
             }
         ],
         "servesCuisine": ["Coffee", "Western", "Indonesian"],
         "priceRange": "$$",
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "bestRating": "5",
-            "ratingCount": "150"
-        },
-        "image": "https://havencafesentani.com/images/haven-cafe-1.png",
+        "hasMenu": "https://havencafesentani.com/images/menu-book/haven-cafe-sentani-menu-20261025.pdf",
+        "image": "https://havencafesentani.com/images/og-image.jpg",
         "sameAs": [
-            "https://www.instagram.com/qwerty.cake20/"
+            "https://www.instagram.com/official_haven_cafe_sentani/"
         ]
     }
     </script>
 </head>
 
-<body class="bg-white dark:bg-dark text-dark dark:text-gray-100 transition-colors duration-300 font-sans">
+<body x-data="app"
+    class="bg-white dark:bg-dark text-dark dark:text-gray-100 transition-colors duration-300 font-sans antialiased">
 
     <!-- Skip Link for Accessibility -->
-    <a href="#main-content"
-        class="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white px-4 py-2 z-[100] rounded">
-        Skip to main content
-    </a>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-    <nav class="fixed top-0 w-full bg-white/95 dark:bg-dark/95 border-b border-gray-200 dark:border-gray-800 z-50"
-        role="navigation" aria-label="Main navigation">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="./"
-                class="flex items-center gap-2 text-primary dark:text-gray-300 font-bold text-xl uppercase tracking-tighter"
+    <!-- ================================================================
+         TOP NAVIGATION
+         ================================================================ -->
+    <nav class="fixed top-0 inset-x-0 z-50 border-b backdrop-blur-md transition-all duration-300"
+        :class="scrolled ? 'bg-white/95 dark:bg-dark/95 border-gray-200 dark:border-gray-800 shadow-sm' : 'bg-white/80 dark:bg-dark/80 border-transparent'"
+        aria-label="Main navigation">
+        <div class="container mx-auto px-4 sm:px-6 h-16 lg:h-20 flex justify-between items-center gap-4">
+            <a href="#home" class="flex items-center gap-2 min-w-0 text-primary dark:text-gray-200 font-extrabold uppercase tracking-tighter"
                 aria-label="Haven Cafe - Home">
-                <img src="images/logo-dark.png" alt="Haven Cafe Logo" class="h-14 w-auto object-contain dark:hidden">
-
-                <img src="images/logo-light.png" alt="Haven Cafe Logo"
-                    class="hidden dark:block h-14 w-auto object-contain">
-
-                <span>Haven Cafe</span>
+                <img src="images/logo-dark.webp" alt="" width="153" height="160"
+                    class="h-10 lg:h-12 w-auto object-contain dark:hidden">
+                <img src="images/logo-light.webp" alt="" width="153" height="160"
+                    class="hidden dark:block h-10 lg:h-12 w-auto object-contain">
+                <span class="text-lg sm:text-xl truncate">Haven Cafe</span>
             </a>
 
-            <div class="flex items-center gap-4 md:gap-10">
-                <div class="hidden md:flex gap-8 font-semibold text-sm uppercase tracking-widest" role="menubar">
-                    <a href="#home" :class="currentSection === 'home' ? 'nav-active' : ''"
-                        @click="currentSection = 'home'" class="hover:text-primary transition py-1"
-                        role="menuitem">Home</a>
-                    <a href="#menu" :class="currentSection === 'menu' ? 'nav-active' : ''"
-                        @click="currentSection = 'menu'" class="hover:text-primary transition py-1" role="menuitem">Our
-                        Menu</a>
-                    <a href="#takeaway" :class="currentSection === 'takeaway' ? 'nav-active' : ''"
-                        @click="currentSection = 'takeaway'" class="hover:text-primary transition py-1"
-                        role="menuitem">Order Delivery</a>
-                    <a href="#reservation" :class="currentSection === 'reservation' ? 'nav-active' : ''"
-                        @click="currentSection = 'reservation'" class="hover:text-primary transition py-1"
-                        role="menuitem">Reservation</a>
-                </div>
+            <div class="hidden lg:flex items-center gap-6 xl:gap-8 font-bold text-xs uppercase tracking-widest">
+                <template x-for="link in links" :key="link.id">
+                    <a :href="'#' + link.id" x-text="link.label"
+                        :class="isActive(link.id) ? 'nav-active' : 'text-gray-600 dark:text-gray-300'"
+                        class="hover:text-primary dark:hover:text-green-400 transition py-1"></a>
+                </template>
+            </div>
 
-                <div class="flex items-center gap-3 md:gap-4">
-                    <button @click="darkMode = !darkMode; localStorage.setItem('theme', darkMode ? 'dark' : 'light')"
-                        class="w-10 h-10 border border-gray-200 dark:border-gray-700 text-green-600 flex items-center justify-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                        :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'" type="button">
-                        <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'" aria-hidden="true"></i>
-                    </button>
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button @click="toggleTheme()" type="button"
+                    class="w-10 h-10 border border-gray-200 dark:border-gray-700 text-green-700 dark:text-green-400 flex items-center justify-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                    :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'" aria-hidden="true"></i>
+                </button>
 
-                    <a href="#contact"
-                        class="hidden sm:block bg-primary text-white px-6 py-2 font-bold uppercase text-xs tracking-widest hover:bg-black dark:hover:bg-white dark:hover:text-dark transition">
-                        Contact Us
-                    </a>
-                </div>
+                <a href="#contact"
+                    class="hidden sm:inline-flex items-center bg-primary text-white h-10 px-5 font-bold uppercase text-xs tracking-widest hover:bg-black dark:hover:bg-white dark:hover:text-dark transition">
+                    Contact Us
+                </a>
+
+                <button @click="drawerOpen = true" type="button" aria-label="Open menu" :aria-expanded="drawerOpen"
+                    class="lg:hidden w-10 h-10 bg-primary text-white flex items-center justify-center">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile / tablet drawer -->
+    <div x-show="drawerOpen" x-cloak class="fixed inset-0 z-[90] lg:hidden" role="dialog" aria-modal="true"
+        aria-label="Site navigation" @keydown.escape.window="drawerOpen = false">
+        <div x-show="drawerOpen" x-transition.opacity class="absolute inset-0 bg-black/60" @click="drawerOpen = false"></div>
+        <aside x-show="drawerOpen" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+            class="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white dark:bg-dark shadow-2xl flex flex-col safe-bottom">
+            <div class="flex items-center justify-between px-5 h-16 border-b border-gray-100 dark:border-gray-800">
+                <span class="font-extrabold uppercase tracking-tighter text-primary dark:text-gray-200">Haven Cafe</span>
+                <button @click="drawerOpen = false" type="button" aria-label="Close menu"
+                    class="w-10 h-10 flex items-center justify-center text-xl text-gray-500">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="px-5 py-4">
+                <span class="status-pill" :class="status.open ? 'is-open' : 'is-closed'">
+                    <span class="status-dot"></span><span x-text="status.label"></span>
+                </span>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto px-3" aria-label="Sections">
+                <template x-for="link in [...links, { id: 'reviews', label: 'Reviews', icon: 'fa-star' }, { id: 'contact', label: 'Contact & Location', icon: 'fa-location-dot' }]" :key="link.id">
+                    <a :href="'#' + link.id" @click="drawerOpen = false"
+                        class="flex items-center gap-4 px-3 py-3.5 font-bold uppercase text-sm tracking-wider border-b border-gray-50 dark:border-gray-800/60"
+                        :class="isActive(link.id) ? 'text-primary dark:text-green-400' : 'text-gray-700 dark:text-gray-300'">
+                        <i class="fa-solid w-5 text-center" :class="link.icon" aria-hidden="true"></i>
+                        <span x-text="link.label"></span>
+                    </a>
+                </template>
+            </nav>
+
+            <div class="p-5 grid gap-3 border-t border-gray-100 dark:border-gray-800">
+                <a href="https://wa.me/6281248584145" target="_blank" rel="noopener noreferrer"
+                    class="bg-primary text-white py-3.5 font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i> Chat on WhatsApp
+                </a>
+                <a href="https://www.instagram.com/official_haven_cafe_sentani/" target="_blank" rel="noopener noreferrer"
+                    class="border border-gray-200 dark:border-gray-700 py-3.5 font-bold uppercase text-xs tracking-widest flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-instagram text-lg" aria-hidden="true"></i> @official_haven_cafe_sentani
+                </a>
+            </div>
+        </aside>
+    </div>
+
     <main id="main-content">
 
-
-        
-        <header id="home" class="relative pt-32 pb-20 px-6 blur-gradient min-h-screen flex items-center overflow-hidden"
-            role="banner">
-            <div
-                class="absolute top-1/4 left-4 md:left-20 z-30 opacity-20 dark:opacity-40 animate-float pointer-events-none">
-                <svg width="80" height="80" viewBox="0 0 512 512" fill="currentColor"
-                    class="text-primary drop-shadow-2xl">
+        <!-- ================================================================
+             HERO
+             ================================================================ -->
+        <header id="home" data-spy
+            class="relative pt-20 sm:pt-24 lg:pt-28 pb-12 sm:pb-16 lg:pb-20 px-4 sm:px-6 blur-gradient lg:min-h-[100svh] flex items-center overflow-hidden">
+            <div class="hidden md:block absolute top-1/4 left-4 lg:left-20 opacity-20 dark:opacity-40 animate-float pointer-events-none"
+                aria-hidden="true">
+                <svg width="80" height="80" viewBox="0 0 512 512" fill="currentColor" class="text-primary">
                     <path
                         d="M411.1 71.1C375.3 35.2 324.2 18.7 271.4 25.1c-53.7 6.5-102.5 35.1-134.1 78.7-33.6 46.4-45.2 103.5-31.9 157.1l3.2 12.8 12.8 3.2c53.6 13.3 110.7 1.7 157.1-31.9 43.6-31.6 72.2-80.4 78.7-134.1 6.3-52.7-10.2-103.8-46.1-139.7zm-95.2 184.2c-42.3 30.6-94.2 41.2-143.1 29.1 12.1-48.9 22.7-100.8 53.3-143.1 28.7-39.6 73-65.5 121.7-71.4-4.2 41.7-18.4 82.6-46.1 118.7-27.7 36.1-61.9 66.7-100.8 91.7l115-115c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-115 115c25 38.9 55.6 73.1 91.7 100.8 36.1 27.7 77 41.9 118.7 46.1-5.9-48.7-31.8-93-71.4-121.7l-46.6 46.7z" />
                 </svg>
             </div>
 
             <div
-                class="container mx-auto grid md:grid-cols-2 gap-0 items-stretch border border-gray-100 dark:border-gray-800 bg-white dark:bg-darkLighter shadow-2xl relative z-10">
-                <div class="p-10 md:p-20 flex flex-col justify-center bg-white dark:bg-darkLighter relative z-10">
-                    <h1 class="text-5xl md:text-7xl font-black leading-none mb-6 uppercase tracking-tighter">
-                        Haven Cafe<br><span class="text-primary italic">Sentani.</span>
+                class="container mx-auto grid lg:grid-cols-2 items-stretch border border-gray-100 dark:border-gray-800 bg-white dark:bg-darkLighter shadow-2xl relative z-10">
+                <div class="p-6 sm:p-10 xl:p-16 flex flex-col justify-center">
+                    <span class="status-pill self-start mb-5" :class="status.open ? 'is-open' : 'is-closed'">
+                        <span class="status-dot"></span><span x-text="status.label"></span>
+                    </span>
+
+                    <h1
+                        class="text-[2.6rem] leading-[0.95] sm:text-6xl xl:text-7xl font-extrabold mb-5 sm:mb-6 uppercase tracking-tighter">
+                        Haven Cafe<br><span class="text-primary dark:text-green-500 italic">Sentani.</span>
                     </h1>
-                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-10 border-l-4 border-primary pl-4">
-                        Experience the finest Papua highland coffee in the heart of Sentani. Authentic flavors blended
-                        with
-                        a modern atmosphere.
+                    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-8 border-l-4 border-primary pl-4">
+                        Experience the finest Papua highland coffee in the heart of Sentani. Authentic flavors
+                        blended with a modern atmosphere.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="grid sm:flex lg:grid xl:flex gap-3 sm:gap-4">
                         <a href="#menu"
-                            class="bg-primary text-white px-8 py-4 font-bold uppercase text-sm tracking-widest text-center hover:bg-black transition flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-utensils"></i>
+                            class="bg-primary text-white px-6 sm:px-8 py-4 font-bold uppercase text-xs sm:text-sm tracking-widest hover:bg-black transition flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
                             Explore Menu
                         </a>
                         <a href="#reservation"
-                            class="border border-dark dark:border-white text-dark dark:text-white px-8 py-4 font-bold uppercase text-sm tracking-widest text-center hover:bg-gray-100 dark:hover:bg-white dark:hover:text-dark transition flex items-center justify-center gap-3">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            class="border border-dark dark:border-white px-6 sm:px-8 py-4 font-bold uppercase text-xs sm:text-sm tracking-widest hover:bg-gray-100 dark:hover:bg-white dark:hover:text-dark transition flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i>
                             Make a reservation
                         </a>
                     </div>
+
+                    <dl class="grid grid-cols-3 mt-8 sm:mt-10 pt-6 border-t border-gray-100 dark:border-gray-800 text-center sm:text-left">
+                        <div>
+                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Since</dt>
+                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">2017</dd>
+                        </div>
+                        <div class="border-x border-gray-100 dark:border-gray-800 sm:px-6">
+                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Beans</dt>
+                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">100% Papua</dd>
+                        </div>
+                        <div class="sm:pl-6">
+                            <dt class="text-[10px] uppercase tracking-widest text-gray-400">Open</dt>
+                            <dd class="font-extrabold text-lg sm:text-2xl lg:text-xl xl:text-2xl whitespace-nowrap">11–21</dd>
+                        </div>
+                    </dl>
                 </div>
 
-                <div x-data="{ 
-                activeSlide: 0, 
-                slides: ['images/haven-cafe-2.png', './images/taman.jpg','./images/haven-cafe-1.png', 'images/haven-cafe-2.png'],
-                autoPlay() { setInterval(() => { this.activeSlide = (this.activeSlide + 1) % this.slides.length }, 5000) }
-            }" x-init="autoPlay()" class="relative min-h-[400px] overflow-hidden">
-                    <div class="absolute inset-0 w-full h-full">
-                        <template x-for="(slide, index) in slides" :key="index">
-                            <div x-show="activeSlide === index" x-transition:enter="transition ease-out duration-1000"
-                                x-transition:enter-start="opacity-0 scale-105"
-                                x-transition:enter-end="opacity-100 scale-100"
-                                x-transition:leave="transition ease-in duration-1000" x-transition:leave-end="opacity-0"
-                                class="absolute inset-0">
-                                <img :src="slide" :alt="'Haven Cafe atmosphere - slide ' + (index + 1)"
-                                    class="w-full h-full object-cover" loading="lazy">
-                            </div>
-                        </template>
-                    </div>
-                    <div class="absolute inset-0 bg-primary/10 pointer-events-none z-10"></div>
-                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-                        <template x-for="(slide, index) in slides" :key="index">
-                            <button @click="activeSlide = index"
-                                :class="activeSlide === index ? 'bg-primary w-10' : 'bg-white/50 hover:bg-white w-2'"
+                <div x-data="heroSlider" @touchstart.passive="touchStart($event)" @touchend="touchEnd($event)"
+                    @mouseenter="pause()" @mouseleave="play()"
+                    class="relative w-full order-first lg:order-none aspect-[4/3] sm:aspect-[16/10] max-h-[70svh] lg:max-h-none lg:aspect-auto lg:min-h-[520px] overflow-hidden bg-gray-100 dark:bg-gray-800"
+                    aria-roledescription="carousel" aria-label="Haven Cafe photos">
+                    <template x-for="(slide, index) in slides" :key="slide.src">
+                        <div x-show="active === index" x-transition:enter="transition ease-out duration-1000"
+                            x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-700" x-transition:leave-end="opacity-0"
+                            class="absolute inset-0">
+                            <img :src="slide.src" :alt="slide.alt" class="w-full h-full object-cover"
+                                :loading="index === 0 ? 'eager' : 'lazy'" :fetchpriority="index === 0 ? 'high' : 'auto'"
+                                width="1400" height="930">
+                        </div>
+                    </template>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+
+                    <button @click="prev()" type="button" aria-label="Previous photo"
+                        class="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white text-dark items-center justify-center rounded-full shadow">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button @click="next()" type="button" aria-label="Next photo"
+                        class="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 hover:bg-white text-dark items-center justify-center rounded-full shadow">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                        <template x-for="(slide, index) in slides" :key="'dot' + index">
+                            <button @click="go(index)" type="button" :aria-label="'Show photo ' + (index + 1)"
+                                :aria-current="active === index"
+                                :class="active === index ? 'bg-white w-8' : 'bg-white/50 hover:bg-white w-2'"
                                 class="h-2 rounded-full transition-all duration-300 shadow-sm"></button>
                         </template>
                     </div>
@@ -267,766 +334,664 @@
             </div>
         </header>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <section id="menu" class="py-24 bg-white dark:bg-dark" x-data="{ 
-            categories: [], 
-            activeCategory: '', 
-            menuItems: [],
-            allMenuItems: [],
-            searchQuery: '',
-            loading: false,
-            loadingAll: false,
-            
-            formatRupiah(number) {
-                    return new Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        minimumFractionDigits: 0
-                    }).format(number);
-                },
-
-                get filteredItems() {
-                    return this.menuItems;
-                },
-
-                get globalSearchResults() {
-                    if (!this.searchQuery) return [];
-                    const query = this.searchQuery.toLowerCase();
-                    return this.allMenuItems.filter(item =>
-                        item.menu_name.toLowerCase().includes(query) ||
-                        item.description.toLowerCase().includes(query)
-                    );
-                },
-
-                async init() {
-                    try {
-                        const res = await fetch('./data/menu/categories.json');
-                        this.categories = await res.json();
-                        if(this.categories.length > 0) this.switchCategory(this.categories[0]);
-                        this.loadAllItems();
-                    } catch (e) {
-                        console.error('Failed to load category list');
-                    }
-                },
-
-                async loadAllItems() {
-                    this.loadingAll = true;
-                    const results = [];
-                    for (const cat of this.categories) {
-                        try {
-                            const res = await fetch(`./data/menu/${cat.file}`);
-                            const data = await res.json();
-                            data.filter(item => item.status).forEach(item => {
-                                results.push({ ...item, category_label: cat.label });
-                            });
-                        } catch (e) {
-                            console.error('Failed to load:', cat.file);
-                        }
-                    }
-                    this.allMenuItems = results;
-                    this.loadingAll = false;
-                },
-                
-                async switchCategory(cat) {
-                    if(this.activeCategory === cat.id && window.innerWidth < 768) {
-                        this.activeCategory = '';
-                        return;
-                    }
-                    if(this.activeCategory === cat.id) return;
-                    
-                    this.loading = true;
-                    this.activeCategory = cat.id;
-                    this.searchQuery = '';
-                    
-                    try {
-                        const res = await fetch(`./data/menu/${cat.file}`);
-                        const data = await res.json();
-                        this.menuItems = data.filter(item => item.status);
-                    } catch (e) {
-                        this.menuItems = [];
-                        console.error('Menu file not found:', cat.file);
-                    }
-                    this.loading = false;
-                }
-            }">
-
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                    <div class="text-center md:text-left">
-                        <h4 class="text-primary dark:text-gray-400 font-bold uppercase text-xs tracking-[0.3em] mb-2">
-                            Our Selection</h4>
-                        <h2 class="text-5xl font-black uppercase tracking-tighter dark:text-white">Discover Menu</h2>
-                        <div class="h-1.5 w-24 bg-primary mt-3 mx-auto md:mx-0"></div>
-                    </div>
-
-                    <div class="relative w-full md:w-72 group">
-                        <label for="menu-search" class="sr-only">Search menu</label>
-                        <input type="search" id="menu-search" x-model="searchQuery" placeholder="Search menu..."
-                            class="w-full bg-gray-50 dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700 px-4 py-3 pr-10 focus:outline-none focus:border-primary transition-all text-sm dark:text-white"
-                            aria-label="Search menu items">
-                        <div
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
-                            <template x-if="!searchQuery">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </template>
-                            <template x-if="searchQuery">
-                                <button @click="searchQuery = ''" class="hover:text-red-500">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col md:flex-row gap-12">
-                    <aside class="hidden md:block md:w-1/3 lg:w-1/4">
-                        <div class="sticky top-24">
-                            <nav class="flex flex-col max-h-[70vh] overflow-y-auto pr-4 custom-scrollbar">
-                                <template x-for="cat in categories" :key="cat.id">
-                                    <button @click="switchCategory(cat)"
-                                        :class="activeCategory === cat.id ? 'bg-primary text-white shadow-xl translate-x-2' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'"
-                                        class="text-left px-5 py-4 transition-all duration-300 font-black uppercase text-sm tracking-tight border-b border-gray-100 dark:border-gray-800 flex justify-between items-center group">
-                                        <span x-text="cat.label"></span>
-                                        <i class="fa-solid fa-chevron-right text-[10px] transition-all"
-                                            :class="activeCategory === cat.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'"></i>
-                                    </button>
-                                </template>
-                            </nav>
-                        </div>
-                    </aside>
-
-                    <main class="w-full md:w-2/3 lg:w-3/4 min-h-[400px]">
-
-                        <!-- Global Search Results -->
-                        <div x-show="searchQuery" x-transition:enter="transition ease-out duration-300">
-                            <div x-show="loadingAll"
-                                class="flex flex-col items-center justify-center py-12 text-gray-400">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-                            </div>
-                            <div x-show="!loadingAll && globalSearchResults.length > 0"
-                                class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 md:py-0">
-                                <template x-for="(item, index) in globalSearchResults" :key="index">
-                                    <div
-                                        class="group animate-fadeIn border border-gray-100 dark:border-gray-800 overflow-hidden hover:border-primary transition duration-300">
-                                        <div class="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                            <img :src="item.options[item.default_selection].image || 'images/placeholder.jpg'"
-                                                :alt="item.menu_name"
-                                                class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                                                loading="lazy">
-                                        </div>
-                                        <div class="p-3">
-                                            <span class="text-[9px] uppercase tracking-widest text-primary font-bold"
-                                                x-text="item.category_label"></span>
-                                            <h3 class="font-black uppercase text-xs md:text-sm dark:text-gray-300 group-hover:text-primary leading-tight mt-0.5 mb-1"
-                                                x-text="item.menu_name"></h3>
-                                            <div class="flex flex-col gap-0.5 mt-1">
-                                                <template x-if="item.options.hot && item.options.hot.available && item.options.hot.price">
-                                                    <span class="text-xs font-bold flex items-center gap-1.5">
-                                                        <i class="fa-solid fa-mug-hot text-[10px] text-orange-500"></i>
-                                                        <span class="text-[10px] uppercase tracking-wider text-gray-400">Hot</span>
-                                                        <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.hot.price)"></span>
-                                                    </span>
-                                                </template>
-                                                <template x-if="item.options.cold && item.options.cold.available && item.options.cold.price">
-                                                    <span class="text-xs font-bold flex items-center gap-1.5">
-                                                        <i class="fa-solid fa-snowflake text-[10px] text-blue-400"></i>
-                                                        <span class="text-[10px] uppercase tracking-wider text-gray-400">Ice</span>
-                                                        <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.cold.price)"></span>
-                                                    </span>
-                                                </template>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
-                            <div x-show="!loadingAll && globalSearchResults.length === 0" class="py-12 text-center">
-                                <i class="fa-solid fa-magnifying-glass text-gray-200 text-3xl mb-3 block"></i>
-                                <p class="text-gray-400 text-[10px] uppercase tracking-widest">No menu found for "<span
-                                        x-text="searchQuery"></span>"</p>
-                            </div>
-                        </div>
-
-                        <!-- Category Browse -->
-                        <div x-show="!searchQuery" class="space-y-4 md:space-y-0">
-                            <template x-for="cat in categories" :key="cat.id">
-                                <div class="border-b border-gray-100 dark:border-gray-800 md:border-none">
-                                    <button @click="switchCategory(cat)"
-                                        class="w-full md:hidden flex justify-between items-center py-4 px-2 text-left"
-                                        :class="activeCategory === cat.id ? 'text-primary' : 'text-gray-700 dark:text-gray-300'">
-                                        <span class="font-black uppercase tracking-tighter text-xl"
-                                            x-text="cat.label"></span>
-                                        <i class="fa-solid fa-plus transition-transform duration-300"
-                                            :class="activeCategory === cat.id ? 'rotate-45' : ''"></i>
-                                    </button>
-
-                                    <div x-show="activeCategory === cat.id" x-collapse class="md:!block">
-                                        <div x-show="loading"
-                                            class="flex flex-col items-center justify-center py-12 text-gray-400">
-                                            <div
-                                                class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4">
-                                            </div>
-                                        </div>
-
-                                        <div x-show="!loading"
-                                            class="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 md:py-0"
-                                            x-transition:enter="transition ease-out duration-300">
-
-                                            <template x-for="(item, index) in filteredItems" :key="index">
-                                                <div
-                                                    class="group animate-fadeIn border border-gray-100 dark:border-gray-800 overflow-hidden hover:border-primary transition duration-300">
-                                                    <div
-                                                        class="aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                                        <img :src="item.options[item.default_selection].image || 'images/placeholder.jpg'"
-                                                            :alt="item.menu_name"
-                                                            class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                                                            loading="lazy">
-                                                    </div>
-                                        <div class="p-3">
-                                                        <h3 class="font-black uppercase text-xs md:text-sm dark:text-gray-300 group-hover:text-primary leading-tight mb-1"
-                                                            x-text="item.menu_name"></h3>
-                                                        <div class="flex flex-col gap-0.5 mt-1">
-                                                            <template x-if="item.options.hot && item.options.hot.available && item.options.hot.price">
-                                                                <span class="text-xs font-bold flex items-center gap-1.5">
-                                                                    <i class="fa-solid fa-mug-hot text-[10px] text-orange-500"></i>
-                                                                    <span class="text-[10px] uppercase tracking-wider text-gray-400">Hot</span>
-                                                                    <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.hot.price)"></span>
-                                                                </span>
-                                                            </template>
-                                                            <template x-if="item.options.cold && item.options.cold.available && item.options.cold.price">
-                                                                <span class="text-xs font-bold flex items-center gap-1.5">
-                                                                    <i class="fa-solid fa-snowflake text-[10px] text-blue-400"></i>
-                                                                    <span class="text-[10px] uppercase tracking-wider text-gray-400">Ice</span>
-                                                                    <span class="text-primary dark:text-gray-300" x-text="formatRupiah(item.options.cold.price)"></span>
-                                                                </span>
-                                                            </template>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </main>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- Take Away & Delivery Section -->
-        <section id="takeaway" class="py-24 bg-gray-50 dark:bg-darkLighter">
-            <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <div class="text-center mb-14">
-                        <h4 class="text-primary dark:text-gray-400 font-bold uppercase text-xs tracking-[0.3em] mb-2">
-                            Take Away & Delivery</h4>
-                        <h2 class="text-5xl font-black uppercase tracking-tighter dark:text-white">Order <span
-                                class="text-primary italic">Delivery.</span></h2>
-                        <div class="h-1.5 w-24 bg-primary mt-3 mx-auto"></div>
-                        <p class="text-gray-500 dark:text-gray-400 mt-6 text-lg max-w-xl mx-auto">
-                            Enjoy your favorite Haven Cafe menu delivered straight to your door. Order via WhatsApp,
-                            we'll deliver!
+        <!-- ================================================================
+             MENU BOOK (pages rendered from the official menu PDF)
+             ================================================================ -->
+        <section id="menu" data-spy x-data="menuBook" @keydown.window="onKey($event)"
+            class="py-16 sm:py-24 bg-white dark:bg-dark">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-6 sm:mb-8 gap-6">
+                    <div class="text-center lg:text-left">
+                        <h4 class="text-primary dark:text-green-500 font-bold uppercase text-xs tracking-[0.3em] mb-2">
+                            Our Menu Book</h4>
+                        <h2 class="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter dark:text-white">Discover
+                            Menu</h2>
+                        <div class="h-1.5 w-24 bg-primary mt-3 mx-auto lg:mx-0"></div>
+                        <p class="text-gray-500 dark:text-gray-400 mt-4 max-w-xl text-sm sm:text-base">
+                            Our complete menu with the latest prices. Tap any page to read it full screen.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
-                        <!-- Delivery Hours -->
-                        <div
-                            class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-6 text-center group hover:border-primary transition-all duration-500">
-                            <i class="fa-solid fa-clock text-primary text-2xl mb-4 block"></i>
-                            <h5 class="font-black uppercase text-xs tracking-widest mb-2 dark:text-white">Delivery Hours
-                            </h5>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold">11:00 AM – 9:00 PM</p>
+                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                        <div class="relative w-full sm:flex-1 lg:w-80">
+                            <label for="menu-search" class="sr-only">Search menu</label>
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                                aria-hidden="true"></i>
+                            <input type="search" id="menu-search" x-model.debounce.200ms="query"
+                                placeholder="Search latte, pizza…"
+                                class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 pl-11 pr-10 py-3.5 focus:outline-none focus:border-primary transition text-base sm:text-sm dark:text-white"
+                                autocomplete="off">
+                            <button x-show="query" x-cloak @click="query = ''" type="button" aria-label="Clear search"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 text-gray-400 hover:text-red-500">
+                                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                            </button>
                         </div>
-
-                        <!-- Delivery Area -->
-                        <div
-                            class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-6 text-center group hover:border-primary transition-all duration-500">
-                            <i class="fa-solid fa-location-dot text-primary text-2xl mb-4 block"></i>
-                            <h5 class="font-black uppercase text-xs tracking-widest mb-2 dark:text-white">Delivery Area
-                            </h5>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-semibold">Doyo – Hawai</p>
-                        </div>
-
-                        <!-- Delivery Fee Sentani -->
-                        <div
-                            class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-6 text-center group hover:border-primary transition-all duration-500">
-                            <i class="fa-solid fa-motorcycle text-primary text-2xl mb-4 block"></i>
-                            <h5 class="font-black uppercase text-xs tracking-widest mb-2 dark:text-white">Sentani
-                                Delivery</h5>
-                            <p class="text-primary dark:text-gray-300 text-xl font-black">Rp 5.000</p>
-                        </div>
-
-                        <!-- Delivery Fee Doyo & Hawai -->
-                        <div
-                            class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-6 text-center group hover:border-primary transition-all duration-500">
-                            <i class="fa-solid fa-truck text-primary text-2xl mb-4 block"></i>
-                            <h5 class="font-black uppercase text-xs tracking-widest mb-2 dark:text-white">Doyo & Hawai
-                                Delivery</h5>
-                            <p class="text-primary dark:text-gray-300 text-xl font-black">Rp 10.000</p>
-                        </div>
-                    </div>
-
-                    <!-- Free Delivery Banner -->
-                    <div class="bg-primary/10 dark:bg-primary/20 border border-primary/30 p-6 text-center mb-14">
-                        <i class="fa-solid fa-gift text-primary text-xl mb-2 block"></i>
-                        <p class="text-primary dark:text-green-400 font-black uppercase text-sm tracking-widest">
-                            Free Delivery for orders above Rp 150,000!
-                        </p>
-                    </div>
-
-                    <!-- WhatsApp CTA -->
-                    <div class="text-center">
-                        <a href="https://wa.me/6281248584145?text=Hi Haven Cafe, I'd like to place a Take Away / Delivery order."
-                            target="_blank"
-                            class="inline-flex items-center gap-4 bg-dark dark:bg-primary text-white px-12 py-5 font-black uppercase text-xs tracking-[0.2em] hover:bg-primary dark:hover:bg-white dark:hover:text-dark transition duration-500">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            Order Now via WhatsApp
-                            <i class="fa-solid fa-arrow-right"></i>
+                        <a :href="book.pdf" download
+                            class="shrink-0 inline-flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 px-5 py-3.5 font-bold uppercase text-xs tracking-widest hover:border-primary hover:text-primary dark:hover:text-green-400 transition">
+                            <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> Download PDF
+                            <span class="text-gray-400 font-semibold normal-case tracking-normal">(4.6 MB)</span>
                         </a>
-                        <p class="text-gray-400 text-[11px] uppercase tracking-widest mt-4">Contact: 0812-4858-4145</p>
+                    </div>
+                </div>
+
+                <!-- Category chips (sticky while browsing) -->
+                <div class="sticky top-16 lg:top-20 z-30 -mx-4 sm:mx-0 px-4 sm:px-0 py-3 bg-white/95 dark:bg-dark/95 backdrop-blur border-b border-gray-100 dark:border-gray-800 mb-6">
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Menu categories">
+                        <template x-for="cat in book.categories" :key="cat.id">
+                            <button @click="setCategory(cat.id)" type="button" role="tab"
+                                :aria-selected="!query && category === cat.id"
+                                :class="!query && category === cat.id ? 'bg-primary text-white border-primary' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-primary'"
+                                class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 border font-bold uppercase text-[11px] tracking-wider transition">
+                                <i class="fa-solid" :class="cat.icon" aria-hidden="true"></i>
+                                <span x-text="cat.label"></span>
+                                <span class="opacity-60" x-text="countFor(cat.id)"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <p x-show="query" x-cloak class="text-sm text-gray-500 dark:text-gray-400 mb-4" aria-live="polite">
+                    <template x-if="visiblePages.length">
+                        <span>Found on <strong class="text-primary dark:text-green-400" x-text="visiblePages.length"></strong>
+                            <span x-text="visiblePages.length === 1 ? 'page' : 'pages'"></span> for
+                            “<span x-text="query"></span>”. Tap a page to see the price.</span>
+                    </template>
+                </p>
+
+                <!-- Page grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-5">
+                    <template x-for="page in visiblePages" :key="page.number">
+                        <button @click="openPage(page.number)" type="button"
+                            class="menu-card group relative text-left bg-gray-100 dark:bg-gray-800 overflow-hidden border border-gray-100 dark:border-gray-800 hover:border-primary focus-visible:border-primary transition animate-fadeIn"
+                            :aria-label="'Open menu page ' + page.number + ': ' + page.title">
+                            <img :src="page.thumb" :alt="'Menu page ' + page.number + ' - ' + page.title"
+                                width="420" height="649" loading="lazy"
+                                class="w-full aspect-[792/1224] object-cover transition duration-500 group-hover:scale-[1.03]">
+                            <span class="absolute top-2 left-2 bg-black/70 text-white text-[10px] font-bold px-2 py-1 tracking-wider"
+                                x-text="String(page.number).padStart(2, '0')"></span>
+                            <span class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 text-dark flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                aria-hidden="true"><i class="fa-solid fa-expand text-xs"></i></span>
+                            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-10 pb-3 px-3">
+                                <span class="block text-[9px] uppercase tracking-widest text-green-300 font-bold"
+                                    x-text="categoryLabel(page.cat)"></span>
+                                <span class="block text-white font-extrabold uppercase text-xs sm:text-sm leading-tight"
+                                    x-text="page.title"></span>
+                            </div>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- Empty search state -->
+                <div x-show="query && !visiblePages.length" x-cloak class="py-14 text-center">
+                    <i class="fa-solid fa-mug-saucer text-gray-300 dark:text-gray-600 text-4xl mb-4 block" aria-hidden="true"></i>
+                    <p class="text-gray-500 dark:text-gray-400 mb-6">No menu found for “<span x-text="query"></span>”.</p>
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                        <button @click="query = ''" type="button"
+                            class="px-6 py-3 border border-gray-200 dark:border-gray-700 font-bold uppercase text-xs tracking-widest">
+                            Show all pages
+                        </button>
+                        <a :href="'https://wa.me/6281248584145?text=' + encodeURIComponent('Hi Haven Cafe, do you have ' + query + '?')"
+                            target="_blank" rel="noopener noreferrer"
+                            class="px-6 py-3 bg-primary text-white font-bold uppercase text-xs tracking-widest inline-flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Ask us on WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <p class="mt-8 text-center text-[11px] uppercase tracking-widest text-gray-400">
+                    Prices in Rupiah · “k” = thousand · Panas / Dingin = Hot / Iced · Menu updated 25 Oct 2026
+                </p>
+            </div>
+
+            <!-- Full-screen menu reader -->
+            <div x-show="open" x-cloak x-transition.opacity.duration.200ms
+                class="fixed inset-0 z-[100] bg-neutral-950 text-white flex flex-col viewer-height" role="dialog"
+                aria-modal="true" :aria-label="'Menu page ' + current.number + ': ' + current.title">
+                <div class="flex items-center gap-3 px-3 sm:px-6 h-14 shrink-0 border-b border-white/10 safe-top">
+                    <span class="text-xs font-bold tabular-nums bg-white/10 px-2.5 py-1.5"
+                        x-text="(position + 1) + ' / ' + sequence.length"></span>
+                    <h3 class="flex-1 min-w-0 truncate font-extrabold uppercase text-xs sm:text-sm tracking-wider"
+                        x-text="current.title"></h3>
+                    <button @click="toggleZoom()" type="button" class="viewer-btn" :aria-pressed="zoom"
+                        :aria-label="zoom ? 'Zoom out' : 'Zoom in'">
+                        <i class="fa-solid" :class="zoom ? 'fa-magnifying-glass-minus' : 'fa-magnifying-glass-plus'"
+                            aria-hidden="true"></i>
+                    </button>
+                    <a :href="current.src" :download="'haven-cafe-menu-page-' + current.number + '.webp'"
+                        class="viewer-btn hidden sm:flex" aria-label="Download this page">
+                        <i class="fa-solid fa-download" aria-hidden="true"></i>
+                    </a>
+                    <button @click="close()" type="button" class="viewer-btn" aria-label="Close menu reader">
+                        <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <div class="relative flex-1 min-h-0">
+                    <div x-ref="stage" @touchstart.passive="touchStart($event)" @touchend="touchEnd($event)"
+                        class="absolute inset-0"
+                        :class="zoom ? 'overflow-auto overscroll-contain' : 'overflow-hidden flex items-center justify-center p-2 sm:p-4'">
+                        <img x-ref="page" :src="current.src" :alt="'Menu page ' + current.number + ' - ' + current.title"
+                            @load="imageLoading = false" @click="toggleZoom($event)" width="1400" height="2164"
+                            :class="zoom ? 'max-w-none viewer-zoomed mx-auto cursor-zoom-out' : 'max-h-full max-w-full w-auto h-auto object-contain cursor-zoom-in'"
+                            class="select-none transition-opacity duration-200" :style="imageLoading ? 'opacity:.35' : ''"
+                            draggable="false">
+                    </div>
+
+                    <div x-show="imageLoading" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div class="animate-spin rounded-full h-10 w-10 border-2 border-white/20 border-t-white"></div>
+                    </div>
+
+                    <button x-show="!zoom && position > 0" @click="prev()" type="button" aria-label="Previous page"
+                        class="viewer-nav left-2 sm:left-6"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                    <button x-show="!zoom && position < sequence.length - 1" @click="next()" type="button"
+                        aria-label="Next page" class="viewer-nav right-2 sm:right-6"><i class="fa-solid fa-chevron-right"
+                            aria-hidden="true"></i></button>
+                </div>
+
+                <div class="shrink-0 border-t border-white/10 safe-bottom">
+                    <div x-ref="strip" class="viewer-strip flex gap-2 overflow-x-auto no-scrollbar px-3 sm:px-6 pt-3">
+                        <template x-for="(n, i) in sequence" :key="'strip' + n">
+                            <button @click="go(i)" type="button" :data-pos="i" :aria-label="'Go to page ' + n"
+                                :aria-current="i === position"
+                                :class="i === position ? 'ring-2 ring-green-400 opacity-100' : 'opacity-50 hover:opacity-100'"
+                                class="shrink-0 h-16 sm:h-20 aspect-[792/1224] overflow-hidden transition">
+                                <img :src="pages[n - 1].thumb" alt="" loading="lazy" class="w-full h-full object-cover">
+                            </button>
+                        </template>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 px-3 sm:px-6 py-3">
+                        <p class="hidden sm:block text-[11px] uppercase tracking-widest text-white/50">
+                            Click page to zoom · ← → to flip · Esc to close
+                        </p>
+                        <p class="sm:hidden text-[10px] uppercase tracking-widest text-white/50">Tap to zoom · Swipe to flip</p>
+                        <a :href="orderUrl()" target="_blank" rel="noopener noreferrer"
+                            class="shrink-0 bg-green-600 hover:bg-green-500 text-white px-4 sm:px-5 py-2.5 font-bold uppercase text-[11px] tracking-widest inline-flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-base" aria-hidden="true"></i> Order
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ================================================================
+             TAKE AWAY & DELIVERY
+             ================================================================ -->
+        <section id="takeaway" data-spy class="py-16 sm:py-24 bg-gray-50 dark:bg-darkLighter">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-10 sm:mb-14">
+                        <h4 class="text-primary dark:text-green-500 font-bold uppercase text-xs tracking-[0.3em] mb-2">
+                            Take Away & Delivery</h4>
+                        <h2 class="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter dark:text-white">Order
+                            <span class="text-primary dark:text-green-500 italic">Delivery.</span></h2>
+                        <div class="h-1.5 w-24 bg-primary mt-3 mx-auto"></div>
+                        <p class="text-gray-500 dark:text-gray-400 mt-6 text-base sm:text-lg max-w-xl mx-auto">
+                            Enjoy your favorite Haven Cafe menu delivered straight to your door. Order via WhatsApp,
+                            SMS or phone — we'll deliver!
+                        </p>
+                    </div>
 
-        <section id="events" class="py-24">
-            <div class="container mx-auto px-6">
-                <div class="max-w-3xl mb-16">
-                    <h4 class="text-primary font-bold uppercase text-xs tracking-[0.3em] mb-3">Garden Venue</h4>
-                    <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-6">
-                        Celebrate in Our <br><span class="text-primary italic">Secret Garden.</span>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
+                        <div class="info-card">
+                            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                            <h5>Delivery Hours</h5>
+                            <p>11:00 – 21:00<br><span class="text-xs font-normal">Wed – Mon</span></p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                            <h5>Delivery Area</h5>
+                            <p>Sentani, Doyo &amp; Hawai</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fa-solid fa-motorcycle" aria-hidden="true"></i>
+                            <h5>Within Sentani</h5>
+                            <p class="price">Rp 5.000</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fa-solid fa-truck" aria-hidden="true"></i>
+                            <h5>Doyo &amp; Hawai</h5>
+                            <p class="price">Rp 10.000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-primary/10 dark:bg-primary/20 border border-primary/30 p-5 sm:p-6 text-center mb-10 sm:mb-14">
+                        <i class="fa-solid fa-gift text-primary dark:text-green-400 text-xl mb-2 block" aria-hidden="true"></i>
+                        <p class="text-primary dark:text-green-400 font-extrabold uppercase text-sm tracking-widest">
+                            Free delivery for orders of Rp 150.000 and above
+                        </p>
+                        <p class="text-gray-500 dark:text-gray-400 text-xs mt-1">Free delivery applies within the Sentani area only.</p>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                        <a href="https://wa.me/6281248584145?text=Hi%20Haven%20Cafe%2C%20I'd%20like%20to%20place%20a%20Take%20Away%20%2F%20Delivery%20order."
+                            target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-3 bg-dark dark:bg-primary text-white px-8 sm:px-10 py-5 font-extrabold uppercase text-xs tracking-[0.2em] hover:bg-primary dark:hover:bg-white dark:hover:text-dark transition duration-500">
+                            <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i>
+                            Order via WhatsApp
+                        </a>
+                        <a href="#menu"
+                            class="inline-flex items-center justify-center gap-3 border border-dark dark:border-white px-8 sm:px-10 py-5 font-extrabold uppercase text-xs tracking-[0.2em] hover:bg-white dark:hover:bg-white dark:hover:text-dark transition">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i> See the Menu
+                        </a>
+                    </div>
+                    <p class="text-center text-gray-400 text-[11px] uppercase tracking-widest mt-4">
+                        WA / SMS / Call: <a href="tel:+6281248584145" class="underline">0812-4858-4145</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================
+             EVENTS / GARDEN VENUE
+             ================================================================ -->
+        <section id="events" data-spy class="py-16 sm:py-24">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="max-w-3xl mb-10 sm:mb-16">
+                    <h4 class="text-primary dark:text-green-500 font-bold uppercase text-xs tracking-[0.3em] mb-3">Garden Venue</h4>
+                    <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tighter leading-none mb-6">
+                        Celebrate in Our <br><span class="text-primary dark:text-green-500 italic">Secret Garden.</span>
                     </h2>
-                    <p class="text-gray-600 dark:text-gray-400 text-lg border-l-4 border-primary pl-6">
+                    <p class="text-gray-600 dark:text-gray-400 text-base sm:text-lg border-l-4 border-primary pl-4 sm:pl-6">
                         From intimate weddings to grand birthday bashes, our lush garden courtyard provides a serene and
                         unforgettable atmosphere in the heart of Sentani.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-ring text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Mini Wedding</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Host an elegant and intimate garden
-                                wedding. Perfect for up to 50 guests with natural floral aesthetics.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Buffet Catering</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Standard Sound System</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Private Garden Access</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-ring text-9xl"></i>
-                        </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                    <div class="event-card group">
+                        <i class="fa-solid fa-ring event-icon" aria-hidden="true"></i>
+                        <h3>Mini Wedding</h3>
+                        <p>Host an elegant and intimate garden wedding. Perfect for up to 50 guests with natural floral
+                            aesthetics.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Buffet Catering</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Standard Sound System</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Private Garden Access</li>
+                        </ul>
+                        <i class="fa-solid fa-ring event-watermark" aria-hidden="true"></i>
                     </div>
 
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-cake-candles text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Birthday Bash</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Celebrate your special day in a
-                                relaxed
-                                outdoor setting. Custom menus available for all ages.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Dessert Table Setup</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Welcome Mocktails</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Birthday Decor Space</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-cake-candles text-9xl"></i>
-                        </div>
+                    <div class="event-card group">
+                        <i class="fa-solid fa-cake-candles event-icon" aria-hidden="true"></i>
+                        <h3>Birthday Bash</h3>
+                        <p>Celebrate your special day in a relaxed outdoor setting. Custom menus available for all ages.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Dessert Table Setup</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Welcome Mocktails</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Birthday Decor Space</li>
+                        </ul>
+                        <i class="fa-solid fa-cake-candles event-watermark" aria-hidden="true"></i>
                     </div>
 
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-users-line text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Social Gathering</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">The perfect spot for family
-                                reunions or
-                                community meetups. Our garden makes every conversation warmer.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Snack Platters</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Free Flow Premium Tea</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Reserved Outdoor Lounge</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-users-line text-9xl"></i>
-                        </div>
+                    <div class="event-card group">
+                        <i class="fa-solid fa-users-line event-icon" aria-hidden="true"></i>
+                        <h3>Social Gathering</h3>
+                        <p>The perfect spot for family reunions or community meetups. Our garden makes every
+                            conversation warmer.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Snack Platters</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Free Flow Premium Tea</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Reserved Outdoor Lounge</li>
+                        </ul>
+                        <i class="fa-solid fa-users-line event-watermark" aria-hidden="true"></i>
                     </div>
 
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-wine-glass text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Intimate Dinner</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">A romantic dinner or anniversary
-                                celebration under the twinkling garden lights.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> 4-Course Signature Meal</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Romantic Table Decor</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Personalized Place Cards</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-wine-glass text-9xl"></i>
-                        </div>
+                    <div class="event-card group">
+                        <i class="fa-solid fa-wine-glass event-icon" aria-hidden="true"></i>
+                        <h3>Intimate Dinner</h3>
+                        <p>A romantic dinner or anniversary celebration under the twinkling garden lights.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> 4-Course Signature Meal</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Romantic Table Decor</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Personalized Place Cards</li>
+                        </ul>
+                        <i class="fa-solid fa-wine-glass event-watermark" aria-hidden="true"></i>
                     </div>
 
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-briefcase text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Garden Meeting</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Escape the office. Boost your
-                                team's
-                                creativity with a meeting in the fresh outdoor air.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Projector & Screen</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Coffee Break Package</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> High-Speed Wi-Fi</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-briefcase text-9xl"></i>
-                        </div>
+                    <div class="event-card group">
+                        <i class="fa-solid fa-briefcase event-icon" aria-hidden="true"></i>
+                        <h3>Garden Meeting</h3>
+                        <p>Escape the office. Boost your team's creativity with a meeting in the fresh outdoor air.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Projector &amp; Screen</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Coffee Break Package</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> High-Speed Wi-Fi</li>
+                        </ul>
+                        <i class="fa-solid fa-briefcase event-watermark" aria-hidden="true"></i>
                     </div>
 
-                    <div
-                        class="group bg-white dark:bg-darkLighter border border-gray-200 dark:border-gray-800 p-8 transition-all duration-500 hover:border-primary relative overflow-hidden">
-                        <div class="relative z-10">
-                            <i class="fa-solid fa-graduation-cap text-3xl text-primary mb-6 block"></i>
-                            <h3 class="text-2xl font-black uppercase mb-4 tracking-tight">Graduation Party</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Celebrate your academic milestone
-                                with
-                                friends. Includes photo spots and catering packages.</p>
-                            <ul class="text-[11px] uppercase tracking-widest font-bold text-gray-400 space-y-2 mb-8">
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Photo Backdrop</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Party Appetizers</li>
-                                <li><i class="fa-solid fa-check text-primary mr-2"></i> Special Group Discount</li>
-                            </ul>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <i class="fa-solid fa-graduation-cap text-9xl"></i>
-                        </div>
+                    <div class="event-card group">
+                        <i class="fa-solid fa-graduation-cap event-icon" aria-hidden="true"></i>
+                        <h3>Graduation Party</h3>
+                        <p>Celebrate your academic milestone with friends. Includes photo spots and catering packages.</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Photo Backdrop</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Party Appetizers</li>
+                            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Special Group Discount</li>
+                        </ul>
+                        <i class="fa-solid fa-graduation-cap event-watermark" aria-hidden="true"></i>
                     </div>
-
                 </div>
 
-                <!-- 6281248584145 -->
-                <div class="mt-16 text-center">
-                    <a href="https://wa.me/6281248584145?text=Hi Haven Cafe, I'm interested in your Garden Event Packages."
-                        target="_blank"
-                        class="inline-flex items-center gap-4 bg-dark dark:bg-primary text-white px-12 py-5 font-black uppercase text-xs tracking-[0.2em] hover:bg-primary dark:hover:bg-white dark:hover:text-dark transition duration-500">
+                <div class="mt-10 sm:mt-16 text-center">
+                    <a href="https://wa.me/6281248584145?text=Hi%20Haven%20Cafe%2C%20I'm%20interested%20in%20your%20Garden%20Event%20Packages."
+                        target="_blank" rel="noopener noreferrer"
+                        class="inline-flex w-full sm:w-auto items-center justify-center gap-3 bg-dark dark:bg-primary text-white px-8 sm:px-12 py-5 font-extrabold uppercase text-xs tracking-[0.2em] hover:bg-primary dark:hover:bg-white dark:hover:text-dark transition duration-500">
                         Contact Our Event Planner
-                        <i class="fa-solid fa-calendar-check"></i>
+                        <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
         </section>
 
+        <!-- ================================================================
+             RESERVATION
+             ================================================================ -->
+        <section id="reservation" data-spy class="py-16 sm:py-24 bg-white dark:bg-darkLighter overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-        <section id="reservation" class="py-24 bg-white dark:bg-darkLighter overflow-hidden">
-            <div class="container mx-auto px-6">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-
-                    <div class="space-y-8">
+                    <div class="space-y-6 sm:space-y-8">
                         <div>
-                            <h4 class="text-green-600 font-bold uppercase text-xs tracking-[0.3em] mb-3">Make a
-                                reservation</h4>
-                            <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none">
-                                Secure Your <br><span class="text-green-600 italic">Haven Experience.</span>
+                            <h4 class="text-green-700 dark:text-green-500 font-bold uppercase text-xs tracking-[0.3em] mb-3">
+                                Make a reservation</h4>
+                            <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tighter leading-none">
+                                Secure Your <br><span class="text-green-700 dark:text-green-500 italic">Haven Experience.</span>
                             </h2>
                         </div>
 
-                        <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-xl">
+                        <p class="text-gray-600 dark:text-gray-400 text-base sm:text-lg leading-relaxed max-w-xl">
                             Whether it's a morning meeting, a romantic evening, or a gathering with friends, we'll make
-                            sure
-                            your spot is ready. For groups larger than 10, please contact us directly via phone.
+                            sure your spot is ready. For groups larger than 10, please contact us directly via phone.
                         </p>
 
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-4">
-                                <div
-                                    class="w-20 h-20 bg-gray-50 dark:bg-dark border border-gray-100 dark:border-gray-700 flex items-center justify-center text-green-600 text-6xl">
-                                    <i class="fa-solid fa-clock"></i>
-                                </div>
-                                <div class="space-y-5">
-                                    <h5 class="font-bold uppercase text-lg">Opening Hours</h5>
-                                    <p class="text-gray-500 text-lg font-bold">Sunday - Monday: 11:00 AM - 10:00 PM</p>
-                                    <p class="text-gray-500 text-lg">Tuesday: <span class="text-red-600">Closed</span>
-                                    </p>
-                                </div>
+                        <div class="flex items-start gap-4 sm:gap-5">
+                            <div
+                                class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-gray-50 dark:bg-dark border border-gray-100 dark:border-gray-700 flex items-center justify-center text-green-700 dark:text-green-500 text-2xl sm:text-3xl">
+                                <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                            </div>
+                            <div class="space-y-1.5">
+                                <h5 class="font-bold uppercase text-base sm:text-lg">Opening Hours</h5>
+                                <p class="text-gray-600 dark:text-gray-300 font-bold">Wednesday – Monday: 11:00 – 21:00</p>
+                                <p class="text-gray-500">Tuesday: <span class="text-red-600 font-bold">Closed</span></p>
+                                <span class="status-pill mt-1" :class="status.open ? 'is-open' : 'is-closed'">
+                                    <span class="status-dot"></span><span x-text="status.label"></span>
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 6281248584145 -->
-                    <div class="relative" x-data="{ 
-                    name: '', 
-                    date: '', 
-                    guests: '2 Persons',
-                    sendWa() {
-                        const message = `Hi Haven Cafe, I would like to make a reservation:%0A%0A- Name: ${this.name}%0A- Date/Time: ${this.date}%0A- Guests: ${this.guests}`;
-                        window.open(`https://wa.me/6281248584145?text=${message}`, '_blank');
-                    }
-                }">
-                        <div class="absolute -top-10 -right-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+                    <form x-data="reservation" @submit.prevent="submit()" class="relative" novalidate>
+                        <div class="absolute -top-10 -right-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" aria-hidden="true"></div>
 
-                        <div
-                            class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-8 md:p-12 shadow-2xl relative z-10">
-                            <div class="grid grid-cols-1 gap-6">
-                                <div class="space-y-2">
-                                    <label for="reservation-name"
-                                        class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Full
-                                        Name</label>
-                                    <input type="text" id="reservation-name" x-model="name"
-                                        placeholder="Enter your name"
-                                        class="w-full bg-gray-50 dark:bg-darkLighter border border-gray-100 dark:border-gray-700 px-4 py-4 focus:outline-none focus:border-primary transition text-sm"
-                                        autocomplete="name" required>
-                                </div>
-
-                                <div class="grid md:grid-cols-2 gap-6">
-                                    <div class="space-y-2">
-                                        <label for="reservation-date"
-                                            class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Date &
-                                            Time</label>
-                                        <input type="datetime-local" id="reservation-date" x-model="date"
-                                            class="w-full bg-gray-50 dark:bg-darkLighter border border-gray-100 dark:border-gray-700 px-4 py-4 focus:outline-none focus:border-primary transition text-sm"
-                                            required>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <label for="reservation-guests"
-                                            class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total
-                                            Guests</label>
-                                        <select id="reservation-guests" x-model="guests"
-                                            class="w-full bg-gray-50 dark:bg-darkLighter border border-gray-100 dark:border-gray-700 px-4 py-4 focus:outline-none focus:border-primary transition text-sm">
-                                            <option>1 Person</option>
-                                            <option>2 Persons</option>
-                                            <option>4 Persons</option>
-                                            <option>6+ Persons</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <button @click="sendWa()"
-                                    class="w-full bg-primary text-white py-5 font-black uppercase text-xs tracking-[0.2em] hover:bg-black transition duration-500 mt-4 flex items-center justify-center gap-3">
-                                    Send the Reservation
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </button>
+                        <div class="bg-white dark:bg-dark border border-gray-200 dark:border-gray-800 p-5 sm:p-8 md:p-12 shadow-2xl relative z-10 grid gap-5">
+                            <div class="space-y-2">
+                                <label for="reservation-name" class="form-label">Your Full Name</label>
+                                <input type="text" id="reservation-name" x-model="name" placeholder="Enter your name"
+                                    class="form-input" autocomplete="name" required>
                             </div>
 
-                            <p class="text-center text-[10px] text-gray-400 mt-6 uppercase tracking-widest">
+                            <div class="grid grid-cols-2 gap-3 sm:gap-5">
+                                <div class="space-y-2">
+                                    <label for="reservation-date" class="form-label">Date</label>
+                                    <input type="date" id="reservation-date" x-model="date" :min="today" class="form-input" required>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="reservation-time" class="form-label">Time</label>
+                                    <select id="reservation-time" x-model="time" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <template x-for="slot in timeSlots" :key="slot">
+                                            <option :value="slot" x-text="slot"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                            <p x-show="isTuesday" x-cloak class="-mt-2 text-xs text-red-600 font-semibold">
+                                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> We are closed on Tuesdays.
+                            </p>
+
+                            <div class="space-y-2">
+                                <label for="reservation-guests" class="form-label">Total Guests</label>
+                                <select id="reservation-guests" x-model="guests" class="form-input">
+                                    <template x-for="n in ['1','2','3','4','5','6','7','8','9','10','10+']" :key="n">
+                                        <option :value="n" :selected="n === guests"
+                                            x-text="n === '10+' ? 'More than 10 persons' : n + (n === '1' ? ' person' : ' persons')"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="reservation-note" class="form-label">Note <span class="normal-case tracking-normal">(optional)</span></label>
+                                <textarea id="reservation-note" x-model="note" rows="2"
+                                    placeholder="Indoor / outdoor seating, occasion, etc." class="form-input resize-none"></textarea>
+                            </div>
+
+                            <p x-show="error" x-cloak x-text="error" class="text-sm text-red-600 font-semibold" role="alert"></p>
+
+                            <button type="submit"
+                                class="w-full bg-primary text-white py-5 font-extrabold uppercase text-xs tracking-[0.2em] hover:bg-black transition duration-500 flex items-center justify-center gap-3">
+                                <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i>
+                                Send the Reservation
+                            </button>
+
+                            <p class="text-center text-[10px] text-gray-400 uppercase tracking-widest">
                                 Instant confirmation via WhatsApp
                             </p>
                         </div>
-                    </div>
+                    </form>
 
                 </div>
             </div>
         </section>
 
-        <section id="gallery" x-data="{ 
-        open: false, 
-        activeImg: '', 
-        limit: 8, 
-        images: [
-            'images/gallery-menu-13.png', 
-            'images/gallery-menu-2.png', 
-            'images/gallery-menu-3.png', 
-            'images/gallery-menu-4.png', 
-            'images/gallery-menu-5.png', 
-            'images/gallery-menu-6.png', 
-            'images/gallery-menu-7.png', 
-            'images/gallery-menu-8.png', 
-            'images/gallery-menu-9.png',
-            'images/gallery-menu-10.png',
-            'images/gallery-menu-11.png',
-            'images/gallery-menu-12.png'
-        ] 
-    }" class="py-24 bg-[#1a2e1a] dark:bg-[#0f1a0f] overflow-hidden">
-
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <!-- ================================================================
+             GALLERY (grouped, filterable, lightbox)
+             ================================================================ -->
+        <section id="gallery" data-spy x-data="gallery" @keydown.window="onKey($event)"
+            class="py-16 sm:py-24 bg-[#1a2e1a] dark:bg-[#0f1a0f] overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="flex flex-col md:flex-row justify-between md:items-end mb-8 sm:mb-10 gap-6">
                     <div class="max-w-xl">
-                        <h4 class="text-green-700 font-bold uppercase text-xs tracking-[0.3em] mb-3">Visual Journey</h4>
-                        <h2 class="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white">
-                            Inside Our <br><span class="text-green-700 italic">Green Haven.</span>
+                        <h4 class="text-green-400 font-bold uppercase text-xs tracking-[0.3em] mb-3">Visual Journey</h4>
+                        <h2 class="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase tracking-tighter leading-none text-white">
+                            Inside Our <br><span class="text-green-400 italic">Green Haven.</span>
                         </h2>
                     </div>
-                    <p class="text-gray-400 max-w-sm border-l border-primary/30 pl-6 text-sm">
+                    <p class="text-gray-400 max-w-sm border-l border-green-400/30 pl-6 text-sm">
                         A glimpse into the atmosphere, the crafts, and the nature that defines the Haven Cafe
                         experience.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <template x-for="(img, index) in images.slice(0, limit)" :key="index">
-                        <div @click="activeImg = img; open = true"
-                            class="aspect-[4/5] overflow-hidden group relative border border-white/5 cursor-pointer"
-                            role="button" tabindex="0" @keydown.enter="activeImg = img; open = true">
-
-                            <img :src="img" :alt="'Haven Cafe gallery - ' + img.split('/').pop()"
-                                class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                                loading="lazy">
-
-                            <div
-                                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                                <i class="fa-solid fa-magnifying-glass-plus text-white text-xl"></i>
-                            </div>
-                        </div>
+                <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-6 sm:mb-8" role="tablist"
+                    aria-label="Gallery categories">
+                    <template x-for="g in groups" :key="g.id">
+                        <button @click="setGroup(g.id)" type="button" role="tab" :aria-selected="group === g.id"
+                            :class="group === g.id ? 'bg-green-400 text-[#0f1a0f] border-green-400' : 'border-white/15 text-gray-300 hover:border-green-400'"
+                            class="shrink-0 px-4 py-2.5 border font-bold uppercase text-[11px] tracking-wider transition">
+                            <span x-text="g.label"></span>
+                            <span class="opacity-60 ml-1" x-text="countFor(g.id)"></span>
+                        </button>
                     </template>
                 </div>
 
-                <div class="mt-12 flex justify-center" x-show="limit < images.length">
-                    <button @click="limit += 4"
-                        class="px-8 py-3 border border-green-700 text-green-700 font-bold uppercase text-xs tracking-widest hover:bg-green-700 hover:text-white transition-all duration-300">
-                        Load More
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 grid-flow-dense gap-2 sm:gap-4">
+                    <template x-for="(img, index) in shown" :key="img.src">
+                        <button @click="show(index)" type="button"
+                            :class="isFeatured(img, index) ? 'col-span-2 row-span-2' : ''"
+                            class="aspect-square overflow-hidden group relative border border-white/5 bg-white/5 animate-fadeIn"
+                            :aria-label="'View photo: ' + img.caption">
+                            <img :src="img.thumb" :alt="img.caption" :width="img.w" :height="img.h" loading="lazy"
+                                class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                            <div
+                                class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8 text-left sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100 transition-opacity duration-300">
+                                <span class="block text-[9px] uppercase tracking-widest text-green-300 font-bold"
+                                    x-text="groupLabel(img.group)"></span>
+                                <span class="block text-white text-xs sm:text-sm font-bold leading-tight line-clamp-2"
+                                    x-text="img.caption"></span>
+                            </div>
+                        </button>
+                    </template>
+                </div>
+
+                <div class="mt-10 flex justify-center" x-show="limit < filtered.length">
+                    <button @click="limit += step" type="button"
+                        class="px-8 py-3.5 border border-green-400 text-green-400 font-bold uppercase text-xs tracking-widest hover:bg-green-400 hover:text-[#0f1a0f] transition-all duration-300">
+                        Show more <span class="opacity-70" x-text="'(' + (filtered.length - limit) + ')'"></span>
                     </button>
                 </div>
             </div>
 
-            <div x-show="open" x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-10"
-                style="display: none;">
+            <!-- Lightbox -->
+            <div x-show="open" x-cloak x-transition.opacity.duration.200ms
+                class="fixed inset-0 z-[100] bg-neutral-950 text-white flex flex-col viewer-height" role="dialog"
+                aria-modal="true" :aria-label="current ? current.caption : 'Photo'">
+                <div class="flex items-center gap-3 px-3 sm:px-6 h-14 shrink-0 safe-top">
+                    <span class="text-xs font-bold tabular-nums bg-white/10 px-2.5 py-1.5"
+                        x-text="(position + 1) + ' / ' + filtered.length"></span>
+                    <span class="flex-1"></span>
+                    <button @click="close()" type="button" class="viewer-btn" aria-label="Close photo">
+                        <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+                    </button>
+                </div>
 
-                <button @click="open = false"
-                    class="absolute top-6 right-6 text-white text-4xl hover:text-primary transition z-[110]"
-                    aria-label="Close gallery lightbox" type="button">
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-                </button>
+                <div class="relative flex-1 min-h-0 flex items-center justify-center px-2 sm:px-20"
+                    @touchstart.passive="touchStart($event)" @touchend="touchEnd($event)" @click.self="close()">
+                    <template x-if="current">
+                        <img :src="current.src" :alt="current.caption" :key="current.src"
+                            class="max-h-full max-w-full object-contain shadow-2xl animate-fadeIn select-none" draggable="false">
+                    </template>
+                    <button @click="prev()" type="button" aria-label="Previous photo" class="viewer-nav left-2 sm:left-6">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+                    <button @click="next()" type="button" aria-label="Next photo" class="viewer-nav right-2 sm:right-6">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                </div>
 
-                <div class="relative max-w-5xl max-h-full w-full h-full flex items-center justify-center"
-                    @click.away="open = false" @keydown.escape="open = false">
-                    <img :src="activeImg" x-transition:enter="transition ease-out duration-500 delay-100"
-                        x-transition:enter-start="scale-90 opacity-0" x-transition:enter-end="scale-100 opacity-100"
-                        class="max-w-full max-h-full object-contain shadow-2xl" :alt="'Full size image: ' + activeImg">
+                <div class="shrink-0 text-center px-4 py-4 safe-bottom" x-show="current">
+                    <span class="block text-[10px] uppercase tracking-widest text-green-300 font-bold"
+                        x-text="current && groupLabel(current.group)"></span>
+                    <p class="font-extrabold uppercase tracking-wide text-sm sm:text-base" x-text="current && current.caption"></p>
                 </div>
             </div>
         </section>
 
-        <section id="reviews" class="py-24 bg-gray-100 dark:bg-dark" x-data="{ reviews: [] }"
-            x-init="fetch('./data/ulasan.json').then(res => res.json()).then(data => reviews = data)">
-
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+        <!-- ================================================================
+             REVIEWS
+             ================================================================ -->
+        <section id="reviews" data-spy x-data="reviews" class="py-16 sm:py-24 bg-gray-100 dark:bg-dark">
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 sm:mb-16 gap-6">
                     <div class="max-w-xl">
-                        <h4 class="text-green-600 font-bold uppercase text-xs tracking-[0.3em] mb-3">Community Voice
-                        </h4>
-                        <h2
-                            class="text-4xl md:text-5xl font-black uppercase tracking-tighter text-gray-900 dark:text-white">
-                            What They <span class="text-green-600 italic">Say.</span>
+                        <h4 class="text-green-700 dark:text-green-500 font-bold uppercase text-xs tracking-[0.3em] mb-3">
+                            Community Voice</h4>
+                        <h2 class="text-4xl md:text-5xl font-extrabold uppercase tracking-tighter text-gray-900 dark:text-white">
+                            What They <span class="text-green-700 dark:text-green-500 italic">Say.</span>
                         </h2>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full md:w-auto">
                         <div
-                            class="flex items-center gap-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-5 py-3 shadow-sm rounded-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                            class="flex items-center gap-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-5 py-3 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6" aria-hidden="true">
                                 <path fill="#FFC107"
                                     d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z">
                                 </path>
                             </svg>
                             <div class="flex flex-col">
-                                <span
-                                    class="text-xs font-black uppercase tracking-widest leading-none dark:text-gray-200">Excellent</span>
+                                <span class="text-xs font-extrabold uppercase tracking-widest leading-none dark:text-gray-200">Excellent</span>
                                 <span class="text-sm font-bold text-gray-500">4.6 / 5.0 Rating</span>
                             </div>
                         </div>
 
-                        <a href="https://share.google/jMihOCbiRSPzeLPXf" target="_blank"
-                            class="bg-primary hover:bg-black text-white px-6 py-4 text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 shadow-lg flex items-center gap-2">
-                            Write A Review <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        <a href="https://share.google/jMihOCbiRSPzeLPXf" target="_blank" rel="noopener noreferrer"
+                            class="bg-primary hover:bg-black text-white px-6 py-4 text-xs font-extrabold uppercase tracking-[0.2em] transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
+                            Write A Review <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                    <template x-for="(item, index) in reviews" :key="index">
-                        <div
-                            class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-8 hover:border-primary transition duration-500 shadow-sm flex flex-col justify-between group">
+                <!-- Swipeable on mobile, grid on larger screens -->
+                <div
+                    class="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 pb-2">
+                    <template x-for="(item, index) in items" :key="index">
+                        <article
+                            class="snap-start shrink-0 w-[85%] sm:w-[60%] md:w-auto bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 p-6 sm:p-8 hover:border-primary transition duration-500 shadow-sm flex flex-col justify-between group">
                             <div>
-                                <div class="flex gap-1 text-orange-400 mb-4 text-xs">
+                                <div class="flex gap-1 text-orange-400 mb-4 text-xs" :aria-label="item.rating + ' out of 5 stars'">
                                     <template x-for="i in 5">
-                                        <i :class="i <= item.rating ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                                        <i :class="i <= item.rating ? 'fa-solid fa-star' : 'fa-regular fa-star'" aria-hidden="true"></i>
                                     </template>
                                 </div>
-                                <p class="text-gray-600 dark:text-gray-400 text-sm italic mb-6 leading-relaxed"
-                                    x-text="'&quot;' + item.ulasan + '&quot;'"></p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm italic leading-relaxed"
+                                    :class="expanded === index ? '' : 'line-clamp-5'" x-text="'“' + item.ulasan + '”'"></p>
+                                <button x-show="item.ulasan.length > 220" @click="expanded = expanded === index ? null : index"
+                                    type="button" class="mt-2 text-xs font-bold uppercase tracking-wider text-primary dark:text-green-400"
+                                    x-text="expanded === index ? 'Show less' : 'Read more'"></button>
                             </div>
-                            <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-4 mt-6">
                                 <div :class="item.warna_bg + ' ' + item.warna_teks"
-                                    class="w-10 h-10 rounded-full flex items-center justify-center font-bold"
+                                    class="w-10 h-10 shrink-0 rounded-full flex items-center justify-center font-bold"
                                     x-text="item.inisial"></div>
                                 <div>
-                                    <h5 class="text-sm font-black uppercase dark:text-white group-hover:text-primary transition-colors"
+                                    <h5 class="text-sm font-extrabold uppercase dark:text-white group-hover:text-primary transition-colors"
                                         x-text="item.nama"></h5>
-                                    <p class="text-[10px] text-gray-400 uppercase tracking-widest" x-text="item.peran">
-                                    </p>
+                                    <p x-show="item.peran" class="text-[10px] text-gray-400 uppercase tracking-widest"
+                                        x-text="item.peran"></p>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     </template>
-
                 </div>
             </div>
         </section>
-    
+
     </main>
 
-    <footer id="contact" class="bg-dark text-white pt-24 pb-32 md:pb-12 border-t border-gray-800" role="contentinfo">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-20 mb-20">
-                <div>
-                    <h4 class="text-2xl font-black uppercase mb-8 border-b border-primary inline-block">Our Location
-                    </h4>
-                    <p class="text-gray-400 text-lg mb-4">Ex-Bosco Fernandez, Jl. Gereja Silo, Hinekombe, Sentani,
-                        Papua.</p>
-                    <p class="text-gray-400 text-lg mb-10">WhatsApp: +62 812-4858-4145</p>
-
-                    <nav class="flex flex-wrap gap-3" aria-label="Social media links">
-                        <a href="https://www.instagram.com/official_haven_cafe_sentani/"
-                            aria-label="Follow us on Instagram" target="_blank" rel="noopener noreferrer"
-                            class="w-24 h-24 border border-gray-700 flex items-center justify-center hover:bg-primary transition text-6xl"><i
-                                class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-
-                        <a href="https://wa.link/g66iyp" aria-label="Contact us on Whatsapp" target="_blank"
-                            rel="noopener noreferrer"
-                            class="w-24 h-24 border border-gray-700 flex items-center justify-center hover:bg-primary transition text-6xl"><i
-                                class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
-
-                    </nav>
+    <!-- ================================================================
+         FOOTER / CONTACT
+         ================================================================ -->
+    <footer id="contact" data-spy class="bg-dark text-white pt-16 sm:pt-24 pb-28 md:pb-12 border-t border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid lg:grid-cols-2 gap-10 lg:gap-20 mb-12 sm:mb-20">
+                <div class="grid sm:grid-cols-2 gap-10">
+                    <div>
+                        <h4 class="text-xl sm:text-2xl font-extrabold uppercase mb-6 border-b-2 border-primary inline-block">
+                            Our Location</h4>
+                        <p class="text-gray-400 mb-3">Ex-Bosco Fernandez, Jl. Gereja Silo #596, Hinekombe, Sentani, Papua.</p>
+                        <p class="text-gray-400 mb-6">
+                            WA / SMS / Call:
+                            <a href="tel:+6281248584145" class="text-white font-bold hover:text-green-400">0812-4858-4145</a>
+                        </p>
+                        <nav class="flex gap-3" aria-label="Social media links">
+                            <a href="https://www.instagram.com/official_haven_cafe_sentani/" aria-label="Follow us on Instagram"
+                                target="_blank" rel="noopener noreferrer"
+                                class="w-14 h-14 border border-gray-700 flex items-center justify-center hover:bg-primary transition text-2xl"><i
+                                    class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                            <a href="https://wa.link/g66iyp" aria-label="Contact us on WhatsApp" target="_blank"
+                                rel="noopener noreferrer"
+                                class="w-14 h-14 border border-gray-700 flex items-center justify-center hover:bg-primary transition text-2xl"><i
+                                    class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Haven+Cafe+Sentani" aria-label="Open in Google Maps"
+                                target="_blank" rel="noopener noreferrer"
+                                class="w-14 h-14 border border-gray-700 flex items-center justify-center hover:bg-primary transition text-2xl"><i
+                                    class="fa-solid fa-map-location-dot" aria-hidden="true"></i></a>
+                        </nav>
+                    </div>
+                    <div>
+                        <h4 class="text-xl sm:text-2xl font-extrabold uppercase mb-6 border-b-2 border-primary inline-block">
+                            Opening Hours</h4>
+                        <ul class="text-gray-400 space-y-2">
+                            <li class="flex justify-between gap-4"><span>Wed – Mon</span><span class="text-white font-bold">11:00 – 21:00</span></li>
+                            <li class="flex justify-between gap-4"><span>Tuesday</span><span class="text-red-400 font-bold">Closed</span></li>
+                            <li class="flex justify-between gap-4"><span>Delivery</span><span class="text-white font-bold">11:00 – 21:00</span></li>
+                        </ul>
+                        <span class="status-pill mt-5" :class="status.open ? 'is-open' : 'is-closed'">
+                            <span class="status-dot"></span><span x-text="status.label"></span>
+                        </span>
+                    </div>
                 </div>
 
-                <div
-                    class="bg-gray-800 border-8 border-darkLighter h-80 grayscale hover:grayscale-0 transition duration-500">
+                <div class="bg-gray-800 border-4 sm:border-8 border-darkLighter h-64 sm:h-80 grayscale hover:grayscale-0 transition duration-500">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3985.877022068411!2d140.4851!3d-2.5833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMsKwMzUnMDAuMCJTIDE0MMKwMjknMDYuNCJF!5e0!3m2!1sen!2sid!4v1700000000000"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
@@ -1034,85 +999,57 @@
                 </div>
             </div>
 
-            <div
-                class="pt-8 border-t border-gray-800 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-gray-600 text-xs uppercase tracking-widest">© 2026 Haven Cafe Sentani. All Rights
-                    Reserved.</p>
-                <a href="https://www.nokensoft.com"
-                    class="text-gray-600 text-xs uppercase tracking-widest hover:text-primary transition">Powered by
-                    Nokensoft</a>
+            <div class="pt-8 border-t border-gray-800 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-xs uppercase tracking-widest">© 2026 Haven Cafe Sentani. All Rights Reserved.</p>
+                <a href="https://www.nokensoft.com" target="_blank" rel="noopener"
+                    class="text-gray-500 text-xs uppercase tracking-widest hover:text-green-400 transition">Powered by Nokensoft</a>
             </div>
         </div>
     </footer>
 
-    <!-- Mobile Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark border-t border-gray-200 dark:border-gray-800 md:hidden z-50 grid grid-cols-6 h-20"
-        role="navigation" aria-label="Mobile navigation">
-        <a href="#home" @click="currentSection = 'home'" aria-label="Home"
-            class="flex items-center justify-center border-r border-gray-100 dark:border-gray-800"
-            :class="currentSection === 'home' ? 'text-primary bg-gray-50 dark:bg-darkLighter' : 'text-gray-400'">
-            <i class="fa-solid fa-house" aria-hidden="true"></i>
-        </a>
-        <a href="#menu" @click="currentSection = 'menu'" aria-label="Menu"
-            class="flex items-center justify-center border-r border-gray-100 dark:border-gray-800"
-            :class="currentSection === 'menu' ? 'text-primary bg-gray-50 dark:bg-darkLighter' : 'text-gray-400'">
-            <i class="fa-solid fa-mug-saucer" aria-hidden="true"></i>
-        </a>
-        <a href="#takeaway" @click="currentSection = 'takeaway'" aria-label="Order Delivery"
-            class="flex items-center justify-center border-r border-gray-100 dark:border-gray-800"
-            :class="currentSection === 'takeaway' ? 'text-primary bg-gray-50 dark:bg-darkLighter' : 'text-gray-400'">
-            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
-        </a>
-        <button @click="darkMode = !darkMode;
-            class=" bg-primary text-white flex items-center justify-center"
-            :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'" type="button">
-            <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'" aria-hidden="true"></i>
-        </button>
-        <a href="#reservation" @click="currentSection = 'reservation'" aria-label="Reservation"
-            class="flex items-center justify-center border-l border-gray-100 dark:border-gray-800"
-            :class="currentSection === 'reservation' ? 'text-primary bg-gray-50 dark:bg-darkLighter' : 'text-gray-400'">
-            <i class="fa-solid fa-seedling" aria-hidden="true"></i>
-        </a>
-        <a href="#contact" @click="currentSection = 'contact'" aria-label="Contact"
-            class="flex items-center justify-center border-l border-gray-100 dark:border-gray-800"
-            :class="currentSection === 'contact' ? 'text-primary bg-gray-50 dark:bg-darkLighter' : 'text-gray-400'">
-            <i class="fa-solid fa-map-pin" aria-hidden="true"></i>
-        </a>
+    <!-- ================================================================
+         MOBILE BOTTOM NAVIGATION
+         ================================================================ -->
+    <nav class="fixed bottom-0 inset-x-0 bg-white/95 dark:bg-dark/95 backdrop-blur border-t border-gray-200 dark:border-gray-800 md:hidden z-50 safe-bottom"
+        aria-label="Mobile navigation">
+        <div class="grid grid-cols-5 h-16">
+            <template x-for="id in mobileLinks" :key="id">
+                <a :href="'#' + id" :aria-current="isActive(id) ? 'true' : null"
+                    class="relative flex flex-col items-center justify-center gap-1 text-[10px] font-bold uppercase tracking-wider transition-colors"
+                    :class="isActive(id) ? 'text-primary dark:text-green-400' : 'text-gray-400'">
+                    <span x-show="isActive(id)" class="absolute top-0 h-0.5 w-8 bg-primary dark:bg-green-400"></span>
+                    <i class="fa-solid text-lg" :class="links.find(l => l.id === id).icon" aria-hidden="true"></i>
+                    <span x-text="links.find(l => l.id === id).short"></span>
+                </a>
+            </template>
+        </div>
     </nav>
 
-    <!-- Floating Action Buttons -->
-    <div class="fixed right-6 bottom-24 md:bottom-10 flex flex-col items-end gap-3 z-40">
-
-        <!-- WhatsApp -->
-        <div class="flex items-center gap-3 group">
-            <span class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-[10px] font-bold uppercase tracking-widest px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap pointer-events-none">
-                Chat via WhatsApp
-            </span>
-            <a href="https://wa.link/g66iyp" target="_blank" rel="noopener noreferrer"
-                aria-label="Chat via WhatsApp"
-                class="w-12 h-12 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 flex-shrink-0">
-                <i class="fa-brands fa-whatsapp text-xl" aria-hidden="true"></i>
-            </a>
-        </div>
-
-        <!-- Instagram -->
-        <div class="flex items-center gap-3 group">
-            <span class="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-[10px] font-bold uppercase tracking-widest px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap pointer-events-none">
-                Follow on Instagram
-            </span>
+    <!-- ================================================================
+         FLOATING ACTION BUTTONS
+         ================================================================ -->
+    <div class="fixed right-4 sm:right-6 fab-offset md:bottom-8 flex flex-col items-end gap-3 z-40">
+        <div class="hidden md:flex items-center gap-3 group">
+            <span class="fab-label">Follow on Instagram</span>
             <a href="https://www.instagram.com/official_haven_cafe_sentani/" target="_blank" rel="noopener noreferrer"
                 aria-label="Follow us on Instagram"
-                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 hover:opacity-90 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 flex-shrink-0">
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 hover:opacity-90 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
                 <i class="fa-brands fa-instagram text-xl" aria-hidden="true"></i>
             </a>
         </div>
 
-        <!-- Back to Top -->
-        <a href="#home" aria-label="Back to top"
-            class="w-12 h-12 rounded-full bg-dark dark:bg-white text-white dark:text-dark flex items-center justify-center shadow-lg transition-all duration-300 hover:bg-primary dark:hover:bg-primary dark:hover:text-white hover:scale-110 flex-shrink-0">
+        <div class="flex items-center gap-3 group">
+            <span class="fab-label hidden md:block">Chat via WhatsApp</span>
+            <a href="https://wa.link/g66iyp" target="_blank" rel="noopener noreferrer" aria-label="Chat via WhatsApp"
+                class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+                <i class="fa-brands fa-whatsapp text-2xl" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <a href="#home" aria-label="Back to top" x-show="scrolled" x-cloak x-transition.opacity
+            class="hidden md:flex w-12 h-12 rounded-full bg-dark dark:bg-white text-white dark:text-dark items-center justify-center shadow-lg transition-all duration-300 hover:bg-primary dark:hover:bg-primary dark:hover:text-white hover:scale-110">
             <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
         </a>
-
     </div>
 
 </body>

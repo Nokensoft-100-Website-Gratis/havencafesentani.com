@@ -1,7 +1,8 @@
 /**
  * Haven Cafe - Main Application
- * Utility functions and Alpine.js data handlers
- * Version: 1.0.0
+ * Alpine.js components (menu book, gallery, reservation, etc.)
+ * Version: 2.0.0
+ * Author: Nokensoft
  */
 
 // ==========================================================================
@@ -24,364 +25,490 @@ tailwind.config = {
 };
 
 // ==========================================================================
+// Business Constants
+// ==========================================================================
+const WHATSAPP_NUMBER = '6281248584145';
+
+// Open Wednesday - Monday, 11:00 - 21:00 WIT (UTC+9). Closed every Tuesday.
+const OPENING_HOURS = { open: 11, close: 21, closedDay: 2, utcOffset: 9 };
+
+// ==========================================================================
 // Utility Functions
 // ==========================================================================
 
 /**
- * Format number as Indonesian Rupiah currency
- * @param {number} amount - The amount to format
- * @returns {string} Formatted currency string
- */
-function formatRupiah(amount) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-    }).format(amount);
-}
-
-/**
- * Generate WhatsApp URL with message
- * @param {string} phone - Phone number (without +)
+ * Generate WhatsApp URL with an encoded message
  * @param {string} message - Message to send
  * @returns {string} WhatsApp URL
  */
-function getWhatsAppUrl(phone, message = '') {
-    const encodedMessage = encodeURIComponent(message);
-    return `https://wa.me/${phone}?text=${encodedMessage}`;
+function waUrl(message = '') {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 /**
- * Create reservation message for WhatsApp
- * @param {Object} data - Reservation data
- * @returns {string} Formatted reservation message
+ * Normalize text for loose search: lowercase, letters and digits only.
+ * Handles letter-spaced text from the menu PDF ("V a n i l l a").
+ * @param {string} text
+ * @returns {string}
  */
-function createReservationMessage(data) {
-    return `Hi Haven Cafe, I would like to make a reservation:
-
-- Name: ${data.name}
-- Date/Time: ${data.date}
-- Guests: ${data.guests}`;
+function normalizeSearch(text) {
+    return text.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g, '');
 }
 
 /**
- * Create event inquiry message for WhatsApp
- * @returns {string} Event inquiry message
+ * Current open/closed status in Sentani local time (WIT)
+ * @returns {{open: boolean, label: string}}
  */
-function createEventInquiryMessage() {
-    return "Hi Haven Cafe, I'm interested in your Garden Event Packages.";
-}
-
-/**
- * Debounce function for performance optimization
- * @param {Function} func - Function to debounce
- * @param {number} wait - Wait time in milliseconds
- * @returns {Function} Debounced function
- */
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-/**
- * Check if element is in viewport
- * @param {Element} element - DOM element to check
- * @returns {boolean} True if element is in viewport
- */
-function isInViewport(element) {
-    const rect = element.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
-
-/**
- * Smooth scroll to element
- * @param {string} selector - CSS selector for target element
- */
-function scrollToElement(selector) {
-    const element = document.querySelector(selector);
-    if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+function openStatus() {
+    const now = new Date(Date.now() + OPENING_HOURS.utcOffset * 3600000);
+    const day = now.getUTCDay();
+    const hour = now.getUTCHours() + now.getUTCMinutes() / 60;
+    if (day === OPENING_HOURS.closedDay) return { open: false, label: 'Closed today (Tuesday)' };
+    if (hour < OPENING_HOURS.open) return { open: false, label: 'Opens today at 11:00' };
+    if (hour >= OPENING_HOURS.close) {
+        return { open: false, label: day === OPENING_HOURS.closedDay - 1 ? 'Closed · Opens Wednesday 11:00' : 'Closed · Opens tomorrow 11:00' };
     }
+    return { open: true, label: 'Open now · until 21:00' };
+}
+
+/**
+ * Lock or unlock page scroll while an overlay is open
+ * @param {boolean} locked
+ */
+function lockScroll(locked) {
+    document.documentElement.classList.toggle('overflow-hidden', locked);
+}
+
+/**
+ * Overlay mixin: scroll lock + browser "back" closes the overlay (important on mobile).
+ * Components using it must implement onOverlayClose().
+ */
+function overlayMixin() {
+    return {
+        _popHandler: null,
+
+        overlayOpened() {
+            lockScroll(true);
+            history.pushState({ havenOverlay: true }, '');
+            this._popHandler = () => {
+                this._popHandler = null;
+                this.onOverlayClose();
+            };
+            window.addEventListener('popstate', this._popHandler, { once: true });
+        },
+
+        overlayClosed() {
+            lockScroll(false);
+            if (this._popHandler) {
+                window.removeEventListener('popstate', this._popHandler);
+                this._popHandler = null;
+                if (history.state && history.state.havenOverlay) history.back();
+            }
+        }
+    };
+}
+
+/**
+ * Swipe mixin: horizontal swipe calls next()/prev() unless swipeDisabled is true.
+ */
+function swipeMixin() {
+    return {
+        _touch: null,
+        swipeDisabled: false,
+
+        touchStart(e) {
+            if (e.touches.length !== 1) { this._touch = null; return; }
+            this._touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        },
+
+        touchEnd(e) {
+            if (!this._touch || this.swipeDisabled) return;
+            const dx = e.changedTouches[0].clientX - this._touch.x;
+            const dy = e.changedTouches[0].clientY - this._touch.y;
+            this._touch = null;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                dx < 0 ? this.next() : this.prev();
+            }
+        }
+    };
 }
 
 // ==========================================================================
-// Alpine.js Data Handlers
+// Alpine.js Components
 // ==========================================================================
+document.addEventListener('alpine:init', () => {
 
-/**
- * Main app state handler for Alpine.js
- */
-function appState() {
-    return {
-        darkMode: localStorage.getItem('theme') === 'dark',
-        activeTab: 'popular',
+    /**
+     * Root app state: theme, navigation, scrollspy
+     */
+    Alpine.data('app', () => ({
+        darkMode: document.documentElement.classList.contains('dark'),
         currentSection: 'home',
-        
-        toggleDarkMode() {
-            this.darkMode = !this.darkMode;
-            localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-        },
-        
-        setSection(section) {
-            this.currentSection = section;
-        }
-    };
-}
+        drawerOpen: false,
+        scrolled: false,
+        status: openStatus(),
+        links: [
+            { id: 'home', label: 'Home', short: 'Home', icon: 'fa-house' },
+            { id: 'menu', label: 'Menu', short: 'Menu', icon: 'fa-book-open' },
+            { id: 'takeaway', label: 'Delivery', short: 'Order', icon: 'fa-motorcycle' },
+            { id: 'events', label: 'Events', short: 'Events', icon: 'fa-seedling' },
+            { id: 'reservation', label: 'Reservation', short: 'Book', icon: 'fa-calendar-check' },
+            { id: 'gallery', label: 'Gallery', short: 'Gallery', icon: 'fa-images' }
+        ],
+        mobileLinks: ['home', 'menu', 'takeaway', 'reservation', 'gallery'],
 
-/**
- * Hero slideshow handler for Alpine.js
- */
-function heroSlideshow() {
-    return {
-        activeSlide: 0,
-        slides: HAVEN_CONFIG.images.heroSlides,
-        intervalId: null,
-        
         init() {
-            this.startAutoPlay();
+            this.$watch('darkMode', value => {
+                document.documentElement.classList.toggle('dark', value);
+                try { localStorage.setItem('theme', value ? 'dark' : 'light'); } catch (e) { /* storage unavailable */ }
+            });
+            this.$watch('drawerOpen', value => lockScroll(value));
+
+            const onScroll = () => { this.scrolled = window.scrollY > 40; };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) this.currentSection = entry.target.id;
+                });
+            }, { rootMargin: '-45% 0px -50% 0px' });
+            document.querySelectorAll('[data-spy]').forEach(el => observer.observe(el));
+
+            setInterval(() => { this.status = openStatus(); }, 60000);
         },
-        
-        startAutoPlay() {
-            this.intervalId = setInterval(() => {
-                this.nextSlide();
-            }, HAVEN_CONFIG.slideshow.interval);
+
+        toggleTheme() {
+            this.darkMode = !this.darkMode;
         },
-        
-        stopAutoPlay() {
-            if (this.intervalId) {
-                clearInterval(this.intervalId);
-            }
-        },
-        
-        nextSlide() {
-            this.activeSlide = (this.activeSlide + 1) % this.slides.length;
-        },
-        
-        prevSlide() {
-            this.activeSlide = this.activeSlide === 0 
-                ? this.slides.length - 1 
-                : this.activeSlide - 1;
-        },
-        
-        goToSlide(index) {
-            this.activeSlide = index;
+
+        isActive(section) {
+            return this.currentSection === section;
         }
-    };
-}
+    }));
 
-/**
- * Menu section handler for Alpine.js
- */
-function menuSection() {
-    return {
-        categories: [],
-        activeCategory: '',
-        menuItems: [],
-        searchQuery: '',
-        loading: false,
-        error: null,
+    /**
+     * Hero image slider with autoplay and swipe
+     */
+    Alpine.data('heroSlider', () => ({
+        ...swipeMixin(),
+        active: 0,
+        slides: [
+            { src: 'images/hero/hero-1.webp', alt: 'Coffee flight on the Haven Cafe bar' },
+            { src: 'images/hero/hero-2.webp', alt: 'Orchid garden seating at Haven Cafe' },
+            { src: 'images/hero/hero-3.webp', alt: 'Haven Cafe garden terrace at night' },
+            { src: 'images/hero/hero-4.webp', alt: 'Evening gathering in the Haven Cafe garden' }
+        ],
+        timer: null,
 
-        async init() {
-            await this.loadCategories();
+        init() {
+            this.play();
+            document.addEventListener('visibilitychange', () => document.hidden ? this.pause() : this.play());
         },
 
-        async loadCategories() {
-            try {
-                const res = await fetch(HAVEN_CONFIG.api.categories);
-                if (!res.ok) throw new Error('Failed to load categories');
-                this.categories = await res.json();
-                if (this.categories.length > 0) {
-                    await this.switchCategory(this.categories[0]);
+        play() {
+            this.pause();
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            this.timer = setInterval(() => this.next(), 5000);
+        },
+
+        pause() {
+            clearInterval(this.timer);
+        },
+
+        go(index) {
+            this.active = (index + this.slides.length) % this.slides.length;
+            this.play();
+        },
+
+        next() { this.go(this.active + 1); },
+        prev() { this.go(this.active - 1); }
+    }));
+
+    /**
+     * Menu book: page grid from the menu PDF, search, and full-screen reader
+     */
+    Alpine.data('menuBook', () => ({
+        ...overlayMixin(),
+        ...swipeMixin(),
+        book: MENU_BOOK,
+        category: 'all',
+        query: '',
+        open: false,
+        sequence: [],
+        position: 0,
+        zoom: false,
+        imageLoading: true,
+
+        get pages() {
+            return this.book.pages.map((page, i) => ({
+                ...page,
+                number: i + 1,
+                src: `images/menu-book/page-${String(i + 1).padStart(2, '0')}.webp`,
+                thumb: `images/menu-book/page-${String(i + 1).padStart(2, '0')}-thumb.webp`
+            }));
+        },
+
+        get visiblePages() {
+            const q = normalizeSearch(this.query);
+            if (q) return this.pages.filter(page => page.search.includes(q));
+            if (this.category === 'all') return this.pages;
+            return this.pages.filter(page => page.cat === this.category);
+        },
+
+        get current() {
+            return this.pages[this.sequence[this.position] - 1] || this.pages[0];
+        },
+
+        countFor(categoryId) {
+            return categoryId === 'all'
+                ? this.book.pages.length
+                : this.book.pages.filter(page => page.cat === categoryId).length;
+        },
+
+        categoryLabel(categoryId) {
+            const found = this.book.categories.find(c => c.id === categoryId);
+            return found ? found.label : '';
+        },
+
+        setCategory(categoryId) {
+            this.category = categoryId;
+            this.query = '';
+        },
+
+        openPage(number) {
+            const list = this.visiblePages.map(page => page.number);
+            this.sequence = list.includes(number) ? list : this.pages.map(page => page.number);
+            this.position = this.sequence.indexOf(number);
+            this.zoom = false;
+            this.swipeDisabled = false;
+            this.imageLoading = true;
+            this.open = true;
+            this.overlayOpened();
+            this.afterChange();
+        },
+
+        close() {
+            this.open = false;
+            this.overlayClosed();
+        },
+
+        onOverlayClose() {
+            this.open = false;
+            lockScroll(false);
+        },
+
+        go(position) {
+            if (position < 0 || position >= this.sequence.length || position === this.position) return;
+            this.position = position;
+            this.zoom = false;
+            this.swipeDisabled = false;
+            this.imageLoading = true;
+            this.afterChange();
+        },
+
+        next() { this.go(this.position + 1); },
+        prev() { this.go(this.position - 1); },
+
+        afterChange() {
+            // Preload neighbouring pages for instant flipping
+            [this.position - 1, this.position + 1].forEach(p => {
+                const n = this.sequence[p];
+                if (n) new Image().src = this.pages[n - 1].src;
+            });
+            this.$nextTick(() => {
+                const stage = this.$refs.stage;
+                if (stage) stage.scrollTo(0, 0);
+                const thumb = this.$refs.strip && this.$refs.strip.querySelector(`[data-pos="${this.position}"]`);
+                if (thumb) thumb.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+            });
+        },
+
+        toggleZoom(event) {
+            const stage = this.$refs.stage;
+            const img = this.$refs.page;
+            let rx = 0.5, ry = 0.3;
+            if (event && img && !this.zoom) {
+                const rect = img.getBoundingClientRect();
+                rx = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+                ry = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+            }
+            this.zoom = !this.zoom;
+            this.swipeDisabled = this.zoom;
+            this.$nextTick(() => {
+                if (!stage) return;
+                if (this.zoom) {
+                    stage.scrollLeft = rx * stage.scrollWidth - stage.clientWidth / 2;
+                    stage.scrollTop = ry * stage.scrollHeight - stage.clientHeight / 2;
+                } else {
+                    stage.scrollTo(0, 0);
                 }
-            } catch (e) {
-                this.error = 'Gagal memuat daftar kategori';
-                console.error(this.error, e);
-            }
+            });
         },
 
-        async switchCategory(cat) {
-            // Toggle on mobile
-            if (this.activeCategory === cat.id && window.innerWidth < 768) {
-                this.activeCategory = '';
-                return;
-            }
-            
-            // Skip if already active on desktop
-            if (this.activeCategory === cat.id) return;
-
-            this.loading = true;
-            this.activeCategory = cat.id;
-            this.searchQuery = '';
-            this.error = null;
-
-            try {
-                const res = await fetch(`./data/menu/${cat.file}`);
-                if (!res.ok) throw new Error('Menu file not found');
-                const data = await res.json();
-                this.menuItems = data.filter(item => item.status);
-            } catch (e) {
-                this.menuItems = [];
-                this.error = `File menu tidak ditemukan: ${cat.file}`;
-                console.error(this.error, e);
-            }
-            
-            this.loading = false;
+        onKey(e) {
+            if (!this.open) return;
+            if (e.key === 'Escape') this.zoom ? this.toggleZoom() : this.close();
+            if (e.key === 'ArrowRight' && !this.zoom) this.next();
+            if (e.key === 'ArrowLeft' && !this.zoom) this.prev();
+            if (e.key === '+' || e.key === '=' || e.key === '-') this.toggleZoom();
         },
 
-        get filteredItems() {
-            if (!this.searchQuery) return this.menuItems;
-            const query = this.searchQuery.toLowerCase();
-            return this.menuItems.filter(item =>
-                item.menu_name.toLowerCase().includes(query) ||
-                item.description.toLowerCase().includes(query)
-            );
-        },
-
-        formatPrice(price) {
-            return formatRupiah(price);
+        orderUrl() {
+            return waUrl(`Hi Haven Cafe, I'd like to order from the menu (page ${this.current.number}: ${this.current.title}).\n\nMy order:\n- `);
         }
-    };
-}
+    }));
 
-/**
- * Reservation form handler for Alpine.js
- */
-function reservationForm() {
-    return {
+    /**
+     * Photo gallery with category filter and lightbox
+     */
+    Alpine.data('gallery', () => ({
+        ...overlayMixin(),
+        ...swipeMixin(),
+        groups: GALLERY.groups,
+        images: GALLERY.images,
+        group: 'all',
+        step: 12,
+        limit: 12,
+        open: false,
+        position: 0,
+
+        get filtered() {
+            return this.group === 'all' ? this.images : this.images.filter(img => img.group === this.group);
+        },
+
+        get shown() {
+            return this.filtered.slice(0, this.limit);
+        },
+
+        get current() {
+            return this.filtered[this.position] || this.filtered[0];
+        },
+
+        countFor(groupId) {
+            return groupId === 'all' ? this.images.length : this.images.filter(img => img.group === groupId).length;
+        },
+
+        groupLabel(groupId) {
+            const found = this.groups.find(g => g.id === groupId);
+            return found ? found.label : '';
+        },
+
+        // Larger tiles for some high-resolution photos to create rhythm in the grid
+        isFeatured(img, index) {
+            return index % 7 === 0 && img.w >= 500;
+        },
+
+        setGroup(groupId) {
+            this.group = groupId;
+            this.limit = this.step;
+        },
+
+        show(index) {
+            this.position = index;
+            this.open = true;
+            this.overlayOpened();
+            this.preload();
+        },
+
+        close() {
+            this.open = false;
+            this.overlayClosed();
+        },
+
+        onOverlayClose() {
+            this.open = false;
+            lockScroll(false);
+        },
+
+        next() {
+            this.position = (this.position + 1) % this.filtered.length;
+            this.preload();
+        },
+
+        prev() {
+            this.position = (this.position - 1 + this.filtered.length) % this.filtered.length;
+            this.preload();
+        },
+
+        preload() {
+            const n = this.filtered.length;
+            [this.position + 1, this.position - 1 + n].forEach(i => { new Image().src = this.filtered[i % n].src; });
+        },
+
+        onKey(e) {
+            if (!this.open) return;
+            if (e.key === 'Escape') this.close();
+            if (e.key === 'ArrowRight') this.next();
+            if (e.key === 'ArrowLeft') this.prev();
+        }
+    }));
+
+    /**
+     * Reservation form → WhatsApp message
+     */
+    Alpine.data('reservation', () => ({
         name: '',
         date: '',
-        guests: '2 Persons',
-        
-        sendWhatsApp() {
-            const message = createReservationMessage({
-                name: this.name,
-                date: this.date,
-                guests: this.guests
+        time: '',
+        guests: '2',
+        note: '',
+        error: '',
+
+        get today() {
+            const now = new Date(Date.now() + OPENING_HOURS.utcOffset * 3600000);
+            return now.toISOString().slice(0, 10);
+        },
+
+        get timeSlots() {
+            const slots = [];
+            for (let h = OPENING_HOURS.open; h < OPENING_HOURS.close; h++) {
+                slots.push(`${String(h).padStart(2, '0')}:00`, `${String(h).padStart(2, '0')}:30`);
+            }
+            return slots;
+        },
+
+        get isTuesday() {
+            return this.date !== '' && new Date(`${this.date}T12:00:00`).getDay() === OPENING_HOURS.closedDay;
+        },
+
+        submit() {
+            this.error = '';
+            if (!this.name.trim()) { this.error = 'Please enter your name.'; return; }
+            if (!this.date || !this.time) { this.error = 'Please choose a date and time.'; return; }
+            if (this.isTuesday) { this.error = 'We are closed on Tuesdays. Please choose another day.'; return; }
+
+            const day = new Date(`${this.date}T12:00:00`).toLocaleDateString('en-GB', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
             });
-            window.open(getWhatsAppUrl(HAVEN_CONFIG.contact.whatsapp, message), '_blank');
-        },
-        
-        isValid() {
-            return this.name.trim() !== '' && this.date !== '';
+            const lines = [
+                'Hi Haven Cafe, I would like to make a reservation:',
+                '',
+                `- Name: ${this.name.trim()}`,
+                `- Date: ${day}`,
+                `- Time: ${this.time}`,
+                `- Guests: ${this.guests === '10+' ? 'More than 10 persons' : this.guests + (this.guests === '1' ? ' person' : ' persons')}`
+            ];
+            if (this.note.trim()) lines.push(`- Note: ${this.note.trim()}`);
+            window.open(waUrl(lines.join('\n')), '_blank', 'noopener');
         }
-    };
-}
+    }));
 
-/**
- * Gallery lightbox handler for Alpine.js
- */
-function galleryLightbox() {
-    return {
-        open: false,
-        activeImg: '',
-        images: HAVEN_CONFIG.images.gallery,
-        
-        openImage(img) {
-            this.activeImg = img;
-            this.open = true;
-            document.body.style.overflow = 'hidden';
-        },
-        
-        closeImage() {
-            this.open = false;
-            document.body.style.overflow = '';
-        },
-        
-        nextImage() {
-            const currentIndex = this.images.indexOf(this.activeImg);
-            const nextIndex = (currentIndex + 1) % this.images.length;
-            this.activeImg = this.images[nextIndex];
-        },
-        
-        prevImage() {
-            const currentIndex = this.images.indexOf(this.activeImg);
-            const prevIndex = currentIndex === 0 
-                ? this.images.length - 1 
-                : currentIndex - 1;
-            this.activeImg = this.images[prevIndex];
-        }
-    };
-}
+    /**
+     * Customer reviews loaded from data/ulasan.json
+     */
+    Alpine.data('reviews', () => ({
+        items: [],
+        expanded: null,
 
-/**
- * Reviews section handler for Alpine.js
- */
-function reviewsSection() {
-    return {
-        reviews: [],
-        loading: true,
-        error: null,
-        
         async init() {
             try {
-                const res = await fetch(HAVEN_CONFIG.api.reviews);
-                if (!res.ok) throw new Error('Failed to load reviews');
-                this.reviews = await res.json();
+                const res = await fetch('./data/ulasan.json');
+                if (!res.ok) throw new Error(res.statusText);
+                this.items = await res.json();
             } catch (e) {
-                this.error = 'Gagal memuat ulasan';
-                console.error(this.error, e);
+                console.error('Failed to load reviews', e);
             }
-            this.loading = false;
         }
-    };
-}
-
-// ==========================================================================
-// Event Listeners
-// ==========================================================================
-
-// Handle keyboard navigation for lightbox
-document.addEventListener('keydown', (e) => {
-    const lightbox = document.querySelector('[x-data*="galleryLightbox"]');
-    if (lightbox && lightbox.__x) {
-        const data = lightbox.__x.$data;
-        if (data.open) {
-            if (e.key === 'Escape') data.closeImage();
-            if (e.key === 'ArrowRight') data.nextImage();
-            if (e.key === 'ArrowLeft') data.prevImage();
-        }
-    }
+    }));
 });
-
-// Track active section on scroll
-const observeSection = debounce(() => {
-    const sections = ['home', 'menu', 'takeaway', 'events', 'reservation', 'gallery', 'reviews', 'contact'];
-    for (const sectionId of sections) {
-        const section = document.getElementById(sectionId);
-        if (section && isInViewport(section)) {
-            // Update Alpine state if available
-            const app = document.querySelector('[x-data*="appState"]');
-            if (app && app.__x) {
-                app.__x.$data.currentSection = sectionId;
-            }
-            break;
-        }
-    }
-}, 100);
-
-window.addEventListener('scroll', observeSection);
-
-// Console welcome message
-console.log(
-    '%c☕ Haven Cafe Website',
-    'color: #1a4d2e; font-size: 20px; font-weight: bold;'
-);
-console.log(
-    '%cPowered by Nokensoft - https://nokensoft.com',
-    'color: #666; font-size: 12px;'
-);
